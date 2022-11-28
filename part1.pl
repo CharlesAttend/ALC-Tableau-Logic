@@ -41,25 +41,25 @@ verif_AboxR([(I1, I2, R) | Q]) :- verif_InstR(I1, I2, R), verif_AboxR(Q), !.
 
 verif_Abox([AboxC | AboxR]) :- verif_AboxC(AboxC), verif_AboxR(AboxR), !.
 
-% Autoreferencement
-%verif_Autoref(Lcc,Lca) vrai ssi les concept na de Lcc ne sont pas autoréférencé
+% Auto-référencement
+% verif_Autoref(Lcc,Lca) vrai ssi les concept non atomique de Lcc ne sont pas auto-référencé
 verif_Autoref([], Lca).
 verif_Autoref([C|L], Lca) :-
-	equiv(C,Def_C),
+	equiv(C, Def_C),
 	pautoref(C, Def_C, Lca),
 	verif_Autoref(L, Lca).
 
-%pautoref(C, Def_C, Lca) vrai ssi le concept non atomique C n''est pas dans la def recursive Def_C
+% pautoref(C, Def_C, Lca) vrai ssi le concept non atomique C n'est pas dans la def récursive Def_C
 pautoref(C, Def_C, Lca) :-
-	member(Def_C,Lca).
+	member(Def_C, Lca).
 	
 pautoref(C, and(D1,D2), Lca) :-
-	pautoref(C,D1,Lca),
-	pautoref(C,D2,Lca).
+	pautoref(C, D1, Lca),
+	pautoref(C, D2, Lca).
 	
 pautoref(C, or(D1,D2), Lca) :-
-	pautoref(C,D1,Lca),
-	pautoref(C,D2,Lca).
+	pautoref(C, D1, Lca),
+	pautoref(C, D2, Lca).
 
 pautoref(C, all(R,D), Lca) :-
 	pautoref(C,D,Lca).
@@ -70,21 +70,33 @@ pautoref(C, some(R,D), Lca) :-
 pautoref(C, not(D), Lca) :-
 	pautoref(C,D,Lca).
 	
-% develeppe(C,D) vrai ssi D est le developpement atomique de C
-developpe(C,C) :- cnamea(C).
+% developpe(C,D) vrai ssi D est le développement atomique de C
+developpe(C, C) :- cnamea(C).
 
-developpe(C,D) :- equiv(C,E),developpe(E,D),!.
+developpe(C, D) :- 
+	equiv(C, E),
+	developpe(E, D), 
+	!.
 
-developpe(not(C),not(D)) :- developpe(C,D),!.
+developpe(not(C), not(D)) :- developpe(C, D), !.
 
-developpe(or(C1,C2),or(D1,D2)) :- developpe(C1,D1),developpe(C2,D2),!.
+developpe(or(C1,C2), or(D1,D2)) :- 
+	developpe(C1, D1), 
+	developpe(C2, D2),
+	!.
 
-developpe(and(C1,C2),and(D1,D2)) :- developpe(C1,D1),developpe(C2,D2),!.
+developpe(and(C1,C2),and(D1,D2)) :- 
+	developpe(C1,D1),
+	developpe(C2,D2),
+	!.
 
-developpe(some(R,C),some(R,D)) :- developpe(C,D),!.
+developpe(some(R,C), some(R,D)) :- developpe(C, D), !.
 
-developpe(all(R,C),all(R,D)) :- developpe(C,D),!.
+developpe(all(R,C), all(R,D)) :- developpe(C, D), !.
 
 % remplacement des box
-transforme([],[]).
-transforme([(X,C)|L],[(X,D)|M]):-developpe(C,E),nnf(E,D),transforme(L,M).
+transforme([], []).
+transforme([(X,C) | L], [(X,D) | M]) :- 
+	developpe(C, E),
+	nnf(E, D),
+	transforme(L, M).
