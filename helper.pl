@@ -1,3 +1,9 @@
+concat([],L1,L1).
+concat([X|Y],L1,[X|L2]) :- concat(Y,L1,L2).
+
+enleve(X,[X|L],L) :- !.
+enleve(X,[Y|L],[Y|L2]) :- enleve(X,L,L2).
+
 nnf(not(and(C1,C2)),or(NC1,NC2)) :- 
     nnf(not(C1),NC1),
     nnf(not(C2),NC2),
@@ -28,6 +34,7 @@ nnf(all(R,C),all(R,NC)) :-
     nnf(C,NC),
     !.
 nnf(X,X).
+
 
 genere(Nom) :- 
     compteur(V),
