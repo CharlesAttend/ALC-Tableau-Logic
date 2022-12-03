@@ -26,5 +26,3 @@ Si je comprend bien le sujet, on doit :
 
 ## Partie 3
 - [ ] 
-
-# Documentation des fonctions
