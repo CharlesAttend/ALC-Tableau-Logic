@@ -14,8 +14,12 @@ Si je comprend bien le sujet, on doit :
     - [ ] Penser a faire passer l'input de l'user par ces fonctions
 - [ ] Implémenter une correction syntaxique : on doit vérifier que ?
 - [ ] `autoref` qui doit vérifier la T-box acyclique
+    - [ ] Est-ce qu'on doit pas raise une erreur si il y a autoref ?
 - [ ] `traitement_Tbox` : Remplacer chaque expression de la TBox par : celle de comportant que des concept atomique (en remplaçant les definitions) et mise sous forme normale négative (Part I remarque 3)
 - [ ] `traitement_Abox` : Same (Part I remarque 4)
+- [ ] Changer les paramètres pour qu'on recoivent la ABox, Tbox en param
+- [ ] Rename `transforme` en `traitement ABox` et `Traitement_TBox`
+- [ ] Est-ce que `transforme` a été testé car je crois de dans les Box fournis y'a rien a développer de base
 
 ## Partie 2
 - [ ] 
