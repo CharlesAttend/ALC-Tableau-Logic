@@ -63,7 +63,7 @@ pautoref(C, or(D1,D2), Lca) :-
 
 pautoref(C, all(R,D), Lca) :-
 	pautoref(C,D,Lca).
-	
+
 pautoref(C, some(R,D), Lca) :-
 	pautoref(C,D,Lca).
 	
@@ -94,7 +94,7 @@ developpe(some(R,C), some(R,D)) :- developpe(C, D), !.
 
 developpe(all(R,C), all(R,D)) :- developpe(C, D), !.
 
-% remplacement des box
+% remplacement des boxs
 transforme([], []).
 transforme([(X,C) | L], [(X,D) | M]) :- 
 	developpe(C, E),
