@@ -11,18 +11,18 @@ Si je comprend bien le sujet, on doit :
 - [X] Implémenter une correction sémantique : par exemple vérifier qu'un rôle est bien un rôles et qu'il est employer comme un rôle partout. (Sujet p.11)
     - [X] Checker la présence de `cnamea(anything).` et `cnamea(nothing).`
     - [ ] Transformer `Vérif_Concept` en `Concept/1` pour respecter la consigne (si c'est bien `verif_concept` qu'il faut rename....)
-    - [ ] Penser a faire passer l'input de l'user par ces fonctions
+    - [X] Penser a faire passer l'input de l'user par ces fonctions
 - [ ] Implémenter une correction syntaxique : on doit vérifier que ?
 - [ ] `autoref` qui doit vérifier la T-box acyclique
     - [ ] Est-ce qu'on doit pas raise une erreur si il y a autoref ?
 - [ ] `traitement_Tbox` : Remplacer chaque expression de la TBox par : celle de comportant que des concept atomique (en remplaçant les definitions) et mise sous forme normale négative (Part I remarque 3)
 - [ ] `traitement_Abox` : Same (Part I remarque 4)
-- [ ] Changer les paramètres pour qu'on recoivent la ABox, Tbox en param
+- [ ] Changer les paramètres pour qu'on recoivent la ABox, Tbox en param comme demandé en consigne
 - [ ] Rename `transforme` en `traitement ABox` et `Traitement_TBox`
 - [ ] Est-ce que `transforme` a été testé car je crois de dans les Box fournis y'a rien a développer de base
 
 ## Partie 2
-- [ ] 
+- [ ] Vérifier que `transforme` fait son taf avec une liste de taille 1
 
 ## Partie 3
 - [ ] 
