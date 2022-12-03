@@ -65,4 +65,32 @@
 \tableofcontents
 \newpage
 
+\section{Introduction}
+
+\section{Description générale et fonctionnement}
+\subsection{Les fichiers}
+Pour une meilleure compréhension du code, nous avons séparer celui-ci en plusieurs fichier. Chacun à sa spécialisation : \begin{itemize}
+    \item \verb|T-A_box.pl| : C'est ici que l'utilisateur entre la TBox et la ABox initial.
+    \item \verb|run.pl| : Contient le prédicat \verb|programme/0|  qui appel les grandes étapes nécessaire à la résolution.
+    \item \verb|part1.pl| : Contient les fonctions liées à la première partie décrite par le sujet.
+    \item \verb|part2.pl| : Contient les fonctions liées à la deuxième partie décrite par le sujet.
+    \item \verb|part3.pl| : Contient les fonctions liées à la troisième partie décrite par le sujet.
+    \item \verb|helper.pl| : Contient quelques prédicats utiles
+\end{itemize}
+
+\subsection{Utilisation du programme}
+\subsubsection{Initialisation de la TBox et de la ABox}
+
+\subsubsection{Lancement et saisie de la proposition à prouver}
+Pour lancer le programme entrez cette commande à la racine du projet : \verb|swipl -f run.pl|. Puis dans l'interpréteur prolog utilisez le prédicat \verb|programme| pour lancer le programme.
+
+
+\subsection{Exemple d'utilisation}
+
+\section{Partie 1 : nom}
+
+\section{Partie 2 : nom}
+
+\section{Partie 3 : nom}
+
 \end{document}
