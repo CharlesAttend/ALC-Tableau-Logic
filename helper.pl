@@ -35,7 +35,7 @@ nnf(all(R,C),all(R,NC)) :-
     !.
 nnf(X,X).
 
-
+compteur(1).
 genere(Nom) :- 
     compteur(V),
     nombre(V,L1),
