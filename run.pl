@@ -21,14 +21,17 @@ premiere_etape(Tbox, Abi, Abr) :-
     setof(X, cnamena(X), Lcc),    % Récupération de la liste des concepts atomiques
     setof(Y, cnamea(Y), Lca),     % Récupération de la liste des concepts non atomiques
     (verif_Autoref(Lcc, Lca) ->
-        write('Il ny a pas auto-référencement dans la TBox');
+        write('Il n\'y a pas auto-référencement dans la TBox');
         write('Il y a auto-référencement dans la TBox')),nl,
-    % Est-ce qu'on doit pas raise une erreur si il y a autoref ?
 
     write('Transformation des boxs en développant les concepts complexes puis mise sous forme normale négative...'), nl,
-    transforme(Abit,Abi), 
-    transforme(Tboxt,Tbox),
-    write('Transformation terminée').
+    transforme(Abit, Abi),
+    % write('abi:'), write(Abi), nl,
+    % write('abit:'), write(Abit),nl,
+    transforme(Tboxt, Tbox),
+    % write('Tbox:'), write(Tbox), nl,
+    % write('Tboxt:'), write(Tboxt),nl,
+    write('Transformation terminée'),nl.
     
 deuxieme_etape(Abi,Abi1,Tbox) :-
     load_files('part2.pl'),
@@ -41,7 +44,7 @@ programme :-
     % run_tests,
     
     premiere_etape(Tbox, Abi, Abr),             % Call de la première partie
-    % deuxieme_etape(Abi,Abi1,Tbox),
+    deuxieme_etape(Abi,Abi1,Tbox),
     % troisieme_etape(Abi1,Abr),
     
     write('Programme terminé !').
