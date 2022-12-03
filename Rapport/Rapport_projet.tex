@@ -1,7 +1,8 @@
-\documentclass{article}
+\documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper, margin=2.5cm]{geometry}
-\usepackage{graphicx}
+\usepackage{graphicx} 
+\usepackage{natbib}
 \usepackage[french]{babel}
 
 \usepackage[default,scale=0.95]{opensans}
@@ -10,48 +11,58 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{systeme}
+\usepackage{bbm}
+\usepackage{media9}
+\usepackage{makecell}
+\usepackage{url}
+% \usepackage{lineno}
+% \linenumbers
 
 \usepackage{hyperref}
 \hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
+    % colorlinks=true,
+    % linkcolor=blue,
+    % filecolor=magenta,      
+    % urlcolor=cyan,
     pdftitle={Projet LRC},
-    % pdfpagemode=FullScreen,
+    %pdfpagemode=FullScreen,
     }
 \urlstyle{same} %\href{url}{Text}
 
-\theoremstyle{plain}% default
-\newtheorem{thm}{Théorème}[section]
-\newtheorem{lem}[thm]{Lemme}
-\newtheorem{prop}[thm]{Proposition}
-\newtheorem*{cor}{Corollaire}
-%\newtheorem*{KL}{Klein’s Lemma}
-
-\theoremstyle{definition}
-\newtheorem{defn}{Définition}[section]
-\newtheorem{exmp}{Exemple}[section]
-% \newtheorem{xca}[exmp]{Exercise}
-
-\theoremstyle{remark}
-\newtheorem*{rem}{Remarque}
-\newtheorem*{note}{Note}
-%\newtheorem{case}{Case}
-
-
-
-\title{%
-    Projet LRC \\
-    \large Écriture en Prolog d'un démonstrateur basé sur
-    l'algorithme des tableaux \\
-    pour la logique de description  $ \mathcal{ALC} $ }
-\author{Charles Vin}
-\date{S1-2022}
+\renewcommand{\baselinestretch}{1.5}
 
 \begin{document}
-\maketitle
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+
+        \Huge
+        \textbf{Rapport de projet}
+
+        \vspace{0.5cm}
+        \LARGE
+        Écriture en Prolog d'un démonstrateur basé sur l'algorithme des tableaux pour la logique de description  $ \mathcal{ALC}$
+
+        \vspace{1.5cm}
+
+        \textbf{Charles Vin}\\
+        \textbf{Barthelemy Dang-Nhu}
+
+        \vfill
 
 
+
+        \normalsize
+
+        \textbf{Année :}
+        2022/2023
+        \hfill
+        \includegraphics[width=0.25\textwidth]{./src/logo.png}
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
 
 \end{document}
