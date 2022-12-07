@@ -9,18 +9,20 @@ premiere_etape(Tbox, Abi, Abr) :-
 
     % Vérification de la Tbox
     write('Vérification de la TBox ...'), nl,
-    verif_Tbox(Tboxt),
-    write('Vérification de la TBox réussi'), nl,
+    (verif_Tbox(Tboxt) ->
+    	write('Vérification de la TBox réussi');
+    	write('Il y a erreur dans la TBox')), nl,
     
     % Vérification de la Abox
     write('Vérification de la ABox ...'), nl,
-    verif_Abox([Abit | Abr]),
-    write('Vérification de la ABox réussi'), nl,
+    (verif_Abox([Abit | Abr]) ->
+    	write('Vérification de la ABox réussi');
+    	write('Il y a erreur dans la ABox')), nl,
 
     % Vérification des auto-référencements
-    setof(X, cnamena(X), Lcc),    % Récupération de la liste des concepts atomiques
-    setof(Y, cnamea(Y), Lca),     % Récupération de la liste des concepts non atomiques
-    (verif_Autoref(Lcc, Lca) ->
+    setof(X, cnamena(X), Lcc),    % Récupération de la liste des concepts non atomiques
+    setof(Y, cnamea(Y), Lca),     % Récupération de la liste des concepts atomiques
+    (verif_Autoref(Lcc) ->
         write('Il n\'y a pas auto-référencement dans la TBox');
         write('Il y a auto-référencement dans la TBox')),nl,
 
@@ -37,6 +39,10 @@ deuxieme_etape(Abi,Abi1,Tbox) :-
     load_files('part2.pl'),
     saisie_et_traitement_prop_a_demontrer(Abi,Abi1,Tbox).
 
+troisieme_etape(Abi,Abr) :-
+    load_files('part3.pl'),
+    tri_Abox(Abi,Lie,Lpt,Li,Lu,Ls).
+    %resolution(Lie,Lpt,Li,Lu,Abr)
 
 programme :-
     % load_files('part3.pl'),
@@ -45,7 +51,6 @@ programme :-
     
     premiere_etape(Tbox, Abi, Abr),             % Call de la première partie
     deuxieme_etape(Abi,Abi1,Tbox),
-    % troisieme_etape(Abi1,Abr),
-    
+    troisieme_etape(Abi1,Abr)
     write('Programme terminé !').
 programme.
