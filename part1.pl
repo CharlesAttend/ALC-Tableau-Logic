@@ -7,68 +7,66 @@
 
 % Vérification sémantique : 
 % Prédicat "Alphabet"
-verif_Concept(C) :- cnamea(C), !. % Vérification des concepts atomique
-verif_Concept(CG) :- cnamena(CG), !. % Vérification des concepts non atomique
-verif_Instance(I) :- iname(I), !. % Vérification des identificateurs d'instance
-verif_Role(R) :- rname(R), !. % Vérification des identificateurs de rôle.
+concept(C) :- cnamea(C), !. % Vérification des concepts atomique
+concept(CG) :- cnamena(CG), !. % Vérification des concepts non atomique
+instance(I) :- iname(I), !. % Vérification des identificateurs d'instance
+role(R) :- rname(R), !. % Vérification des identificateurs de rôle.
 
 % On vérifie la grammaire de la logique ALC (sujet I.3)
-verif_Concept(not(C)) :- verif_Concept(C), !.
-verif_Concept(and(C1, C2)) :- verif_Concept(C1), verif_Concept(C2), !.
-verif_Concept(or(C1, C2)) :- verif_Concept(C1), verif_Concept(C2), !.
-verif_Concept(some(R, C)) :- verif_Role(R), verif_Concept(C), !.
-verif_Concept(all(R, C)) :- verif_Role(R), verif_Concept(C), !.
+concept(not(C)) :- concept(C), !.
+concept(and(C1, C2)) :- concept(C1), concept(C2), !.
+concept(or(C1, C2)) :- concept(C1), concept(C2), !.
+concept(some(R, C)) :- role(R), concept(C), !.
+concept(all(R, C)) :- role(R), concept(C), !.
 
 % Vérification syntaxique
 % Pour la Tbox
-verif_Equiv(CA, CG) :- verif_Concept(CA), verif_Concept(CG), !.
+definition(CA, CG) :- cnamena(CA), concept(CG), !.
 verif_Tbox([(CA, CG) | Q]) :- 
-    verif_Concept(anything), 
-    verif_Concept(nothing), 
-    verif_Equiv(CA, CG), 
+    definition(CA, CG), 
     verif_Tbox(Q).
 verif_Tbox([]).
 
 % Pour la Abox
-verif_Inst(I, CG) :- verif_Instance(I), verif_Concept(CG), !.
-verif_InstR(I1, I2, R) :- verif_Instance(I1), verif_Instance(I2), verif_Role(R), !.
+instanciationC(I, CG) :- instance(I), concept(CG), !.
+instanciationR(I1, I2, R) :- instance(I1), instance(I2), role(R), !.
 
 verif_AboxC([]).
-verif_AboxC([(I, CG) | Q]) :- verif_Inst(I, CG), verif_AboxC(Q), !.
+verif_AboxC([(I, CG) | Q]) :- instanciationC(I, CG), verif_AboxC(Q), !.
 
 verif_AboxR([]).
-verif_AboxR([(I1, I2, R) | Q]) :- verif_InstR(I1, I2, R), verif_AboxR(Q), !.
+verif_AboxR([(I1, I2, R) | Q]) :- instanciationR(I1, I2, R), verif_AboxR(Q), !.
 
 verif_Abox([AboxC | AboxR]) :- verif_AboxC(AboxC), verif_AboxR(AboxR), !.
 
 % Auto-référencement
 % verif_Autoref(Lcc,Lca) vrai ssi les concept non atomique de Lcc ne sont pas auto-référencé
-verif_Autoref([], Lca).
-verif_Autoref([C|L], Lca) :-
+verif_Autoref([]).
+verif_Autoref([C|L]) :-
 	equiv(C, Def_C),
-	pautoref(C, Def_C, Lca),
-	verif_Autoref(L, Lca).
+	pautoref(C, Def_C),
+	verif_Autoref(L).
 
-% pautoref(C, Def_C, Lca) vrai ssi le concept non atomique C n'est pas dans la def récursive Def_C
-pautoref(C, Def_C, Lca) :-
-	member(Def_C, Lca).
+% pautoref(C, Def, Lca) vrai ssi le concept non atomique C n'est pas dans la def récursive Def
+pautoref(C, Def) :-
+	cnamea(Def).
 	
-pautoref(C, and(D1,D2), Lca) :-
-	pautoref(C, D1, Lca),
-	pautoref(C, D2, Lca).
+pautoref(C, and(D1,D2)) :-
+	pautoref(C, D1),
+	pautoref(C, D2).
 	
-pautoref(C, or(D1,D2), Lca) :-
-	pautoref(C, D1, Lca),
-	pautoref(C, D2, Lca).
+pautoref(C, or(D1,D2)) :-
+	pautoref(C, D1),
+	pautoref(C, D2).
 
-pautoref(C, all(R,D), Lca) :-
-	pautoref(C,D,Lca).
+pautoref(C, all(R,D)) :-
+	pautoref(C,D).
 
-pautoref(C, some(R,D), Lca) :-
-	pautoref(C,D,Lca).
+pautoref(C, some(R,D)) :-
+	pautoref(C,D).
 	
-pautoref(C, not(D), Lca) :-
-	pautoref(C,D,Lca).
+pautoref(C, not(D)) :-
+	pautoref(C,D).
 	
 % developpe(C,D) vrai ssi D est le développement atomique de C
 developpe(C, C) :- cnamea(C).
