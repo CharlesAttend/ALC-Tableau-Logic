@@ -18,7 +18,7 @@ input_prop_type1(I,CG) :-
     read(I),nl,
     write('Entrez C :'),nl, 
     read(CG),
-    (verif_Inst(I, CG) -> % if 
+    (instanciationC(I, CG) -> % if 
         write("Input correct")
         ; ( % else
         write('Erreur : I n\'est pas une instance déclarée ou C n\'est pas un concept'), nl,
@@ -40,7 +40,7 @@ input_prop_type2(C1, C2) :-
     read(C1),nl,
     write('Entrez C2 :'),nl, 
     read(C2),
-    (verif_Concept(and(C1, C2)) -> % if 
+    (concept(and(C1, C2)) -> % if 
         write("Input correct")
         ; ( % else
         write('Erreur : C1 ou C2 n\'est pas un concept déclarée'), nl,
