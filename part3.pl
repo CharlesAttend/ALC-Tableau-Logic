@@ -32,6 +32,11 @@ evolue(A,Lie,Lpt,Li,Lu,Ls,Lie,Lpt,Li,Lu,Ls):-
 	member(A,Ls).
 evolue(A,Lie,Lpt,Li,Lu,Ls,Lie,Lpt,Li,Lu,[A|Ls]).
 
+evolue_rec([],Lie,Lpt,Li,Lu,Ls,Lie,Lpt,Li,Lu,Ls).
+evolue_rec([A|L],Lie,Lpt,Li,Lu,Ls,Lie1,Lpt1,Li1,Lu1,Ls1):-
+	evolue(A,Lie,Lpt,Li,Lu,Ls,Lie2,Lpt2,Li2,Lu2,Ls2),
+	evolue_rec(L,Lie2,Lpt2,Li2,Lu2,Ls2,Lie1,Lpt1,Li1,Lu1,Ls1).
+
 %test de clash
 non_clash([]).
 non_clash([(I,C)|Ls]) :- 
