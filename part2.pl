@@ -28,7 +28,7 @@ input_prop_type1(I,CG) :-
 
 acquisition_prop_type1(Abi,Abi1,Tbox) :- 
     input_prop_type1(I, CG), % User input
-    transforme([(I,CG)], [(I, CG_dev_nnf)]), % Développement + nnf (comment developper avec les définitions de la Tbox sans envoyer la Tbox en param??)
+    transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf (comment developper avec les définitions de la Tbox sans envoyer la Tbox en param??)
     concat(Abi,[(I, CG_dev_nnf)], Abi1),
     write("Abi1"), write(Abi1)
     . % ajout de l'input de l'utilisateur dans la ABox
