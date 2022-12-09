@@ -41,8 +41,8 @@ deuxieme_etape(Abi,Abi1,Tbox) :-
 
 troisieme_etape(Abi,Abr) :-
     load_files('part3.pl'),
-    tri_Abox(Abi,Lie,Lpt,Li,Lu,Ls).
-    %resolution(Lie,Lpt,Li,Lu,Abr)
+    tri_Abox(Abi,Lie,Lpt,Li,Lu,Ls),
+    resolution(Lie,Lpt,Li,Lu,Ls,Abr)
 
 programme :-
     % load_files('part3.pl'),
