@@ -11,7 +11,11 @@ tri_Abox([(I, or(C1,C2)) | L], Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls) :-
 tri_Abox([A|L], Lie, Lpt, Li, Lu, [A|Ls]) :-
     tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
 	
-%evolue
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Evolue                                                                   │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 evolue((I, some(R,C)), Lie, Lpt, Li, Lu, Ls, Lie, Lpt, Li, Lu, Ls) :-
     member((I, some(R,C)), Lie).
 evolue((I, some(R,C)), Lie, Lpt, Li, Lu, Ls, [(I, some(R,C)) | Lie], Lpt, Li, Lu, Ls).
@@ -37,14 +41,22 @@ evolue_rec([A|L], Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1) :-
     evolue(A, Lie, Lpt, Li, Lu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2),
     evolue_rec(L, Lie2, Lpt2, Li2, Lu2, Ls2, Lie1, Lpt1, Li1, Lu1, Ls1).
 
-%test de clash
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Test de clash                                                            │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 non_clash([]).
 non_clash([(I,C) | Ls]) :-
     nnf(not(C), NC),
     \+ member((I, NC), Ls),
     non_clash(Ls).
 	
-%resolution revoie vrai si on trouve une feuille ouverte
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Resolution : Revoie vrai si on trouve une feuille ouverte                │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 resolution(Lie, Lpt, Li, Lu, Ls, Abr) :-
     non_clash(Ls),
     complete_some(Lie, Lpt, Li, Lu, Ls, Abr).
@@ -64,7 +76,11 @@ resolution([], [], [], Lu, Ls, Abr):-
 resolution([], [], [], [], Ls, Abr):-
 	non_clash(Ls).
 
-%affichage
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Affichage                                                                │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 affiche_Ls([]).
 affiche_concept(some(R, C)) :-
 	write('\u2203'),
@@ -120,12 +136,16 @@ affiche_evolution_Abox(Ls1, Lie1, Lpt1, Li1, Lu1, Abr1, Ls2, Lie2, Lpt2, Li2, Lu
 	affiche_Abi(Lu2),
 	affiche_Abr(Abr2).
 
-% Non testé
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Union : ⊔                                                                │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :- 
 	% Suppression & extraction de la règle devenus inutile par la décomposition en paramètre
 	
 	% _________________________________
-	% Premier split Br1 & nouveau noeud
+	% Premier split Br1 & Nouveau noeud
 	evolue((I, C1), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
 	
 	% Print du split
@@ -138,7 +158,7 @@ transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :-
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr),
 
 	% __________________________________
-	% Deuxième split Br2 & nouveau noeud
+	% Deuxième split Br2 & Nouveau noeud
 	evolue((I, C2),Lie, Lpt, Li, Lu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2),
 	
 	% Print du split
@@ -150,10 +170,15 @@ transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :-
 	% Appel récursif
 	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
 
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Intersection : ⊓                                                         │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :- 
 	% Suppression & extraction de la règle devenus inutile par la décomposition en paramètre
 
-	% Split & nouveau noeud
+	% Nouveau noeud
 	evolue((I,C1), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
 	evolue((I,C2), Lie1, Lpt1, Li1, Lu1, Ls1, Lie2, Lpt2, Li2, Lu2, Ls2),
 
@@ -167,16 +192,34 @@ transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :-
 	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
 	
 	
-%il existe
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ % Il existe : ∀                                                          │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 complete_some([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr) :-
+	% Nouveau noeud
 	genere(I2),
 	evolue((I2, C), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), !, 
-	affiche_evolution_Abox(Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
+	
+	% Print du noeud
+	affiche_evolution_Abox(Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
+	
+	% Appel récursif
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, [(I1, I2, R) | Abr]).
 
-%pour tout
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ % Pour tout : ∃                                                          │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 deduction_all(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr) :-
+	% Nouveau noeud
 	setof((I2, C),  member((I1, I2, R), Abr),  LC2), 
 	evolue_rec(LC2, Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), !, 
+	
+	% Print du noeud
 	affiche_evolution_Abox(Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
+	
+	% Appel récursif
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
