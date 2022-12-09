@@ -51,6 +51,6 @@ programme :-
     
     premiere_etape(Tbox, Abi, Abr),             % Call de la première partie
     deuxieme_etape(Abi,Abi1,Tbox),
-    troisieme_etape(Abi1,Abr)
+    troisieme_etape(Abi1,Abr),
     write('Programme terminé !').
 programme.
