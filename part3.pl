@@ -95,18 +95,18 @@ affiche_concept(all(R, C)) :-
 	write('\u2200'),
 	write(R),
 	write('.'),
-	affiche_concept(C).
+	affiche_concept(C),!.
 affiche_concept(and(C1, C2)) :-
 	affiche_concept(C1),
 	write('\u2A05'),
 	affiche_concept(C2).
 affiche_concept(or(C1, C2)) :-
-	affiche_concept(C1),
+	affiche_concept(C1),!,
 	write('\u2A06'),
-	affiche_concept(C2).
+	affiche_concept(C2),!.
 affiche_concept(not(C)) :-
 	write('\u00AC'),
-	affiche_concept(C).
+	affiche_concept(C),!.
 affiche_concept(anything) :-
 	write('\u22A4').
 affiche_concept(nothing) :-
@@ -117,28 +117,30 @@ affiche_concept(C) :-
 affiche_Abi([]).
 affiche_Abi([(I, C) | L]):-
 	write(I), write(':'), affiche_concept(C),nl,
-	affiche_Abi(L).
+	affiche_Abi(L),!.
 
 affiche_Abr([]).
 affiche_Abr([(I1, I2, R) | L]) :-
 	write('<'), write(I1), write(','), write(I2), write('>:'),
 	write(R),nl,
-	affiche_Abr(L).
+	affiche_Abr(L),!.
 
 affiche_evolution_Abox(Ls1, Lie1, Lpt1, Li1, Lu1, Abr1, Ls2, Lie2, Lpt2, Li2, Lu2, Abr2):-
 	write("Etat de départ :"),nl,
-	affiche_Abi(Ls1),
-	affiche_Abi(Lie1),
-	affiche_Abi(Lpt1),
-	affiche_Abi(Lu1),
-	affiche_Abr(Abr1),
+	affiche_Abi(Ls1),!,
+	affiche_Abi(Lie1),!,
+	affiche_Abi(Lpt1),!,
+	affiche_Abi(Li1),!,
+	affiche_Abi(Lu1),!,
+	affiche_Abr(Abr1),!,
 	nl,
-	write("Etat d'arrivée :"),nl,
-	affiche_Abi(Ls2),
-	affiche_Abi(Lie2),
-	affiche_Abi(Lpt2),
-	affiche_Abi(Lu2),
-	affiche_Abr(Abr2).
+	write("Etat d'arrivée :"),nl,!,
+	affiche_Abi(Ls2),!,
+	affiche_Abi(Lie2),!,
+	affiche_Abi(Lpt2),!,
+	affiche_Abi(Li2),!,
+	affiche_Abi(Lu2),!,
+	affiche_Abr(Abr2),!.
 
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
@@ -153,7 +155,7 @@ transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :-
 	evolue((I, C1), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
 	
 	% Print du split
-	affiche_evolution_Abox(Ls, Lie, Lpt, Li, Lu, Abr, Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
+	affiche_evolution_Abox(Ls, Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Abr, Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
 	
 	% Test Clash
 	non_clash(Ls1),
@@ -166,10 +168,7 @@ transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :-
 	evolue((I, C2),Lie, Lpt, Li, Lu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2),
 	
 	% Print du split
-	affiche_evolution_Abox(Ls, Lie, Lpt, Li, Lu, Abr, Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
-	
-	% Test Clash
-	non_clash(Ls2),
+	affiche_evolution_Abox(Ls, Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Abr, Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
 	
 	% Appel récursif
 	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
@@ -183,17 +182,13 @@ transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :-
 	% Suppression & extraction de la règle devenus inutile par la décomposition en paramètre
 
 	% Nouveau noeud
-	evolue((I,C1), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
-	evolue((I,C2), Lie1, Lpt1, Li1, Lu1, Ls1, Lie2, Lpt2, Li2, Lu2, Ls2),
+	evolue_rec([(I,C1),(I,C2)], Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
 
 	% Print du split
-	affiche_evolution_Abox(Ls, Lie, Lpt, Li, Lu, Abr, Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
-
-	% Test Clash
-	test_clash(Ls2),
+	affiche_evolution_Abox(Ls, Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Abr, Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
 
 	% Appel récursif
-	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
+	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
 	
 	
 /* 
@@ -207,7 +202,7 @@ complete_some([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr) :-
 	evolue((I2, C), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), !, 
 	
 	% Print du noeud
-	affiche_evolution_Abox(Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
+	affiche_evolution_Abox([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr, Lie1, Lpt1, Li1, Lu1, Ls1, [(I1, I2, R) | Abr]),
 	
 	% Appel récursif
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, [(I1, I2, R) | Abr]).
@@ -223,7 +218,7 @@ deduction_all(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr) :-
 	evolue_rec(LC2, Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), !, 
 	
 	% Print du noeud
-	affiche_evolution_Abox(Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
+	affiche_evolution_Abox(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr, Lie1, Lpt1, Li1, Lu1, Ls1, Abr), 
 	
 	% Appel récursif
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
