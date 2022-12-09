@@ -160,3 +160,18 @@ transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :-
 
 	% Appel récursif
 	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
+	
+	
+%il existe
+complete_some([(I1,some(R,C))|Lie],Lpt,Li,Lu,Ls,Abr) :-
+	genere(I2),
+	evolue((I2,C),Lie,Lpt,Li,Lu,Ls,Lie1,Lpt1,Li1,Lu1,Ls1),!,
+	affiche_evolution_Abox(Lie,Lpt,Li,Lu,Ls,Lie1,Lpt1,Li1,Lu1,Ls1),
+	resolution(Lie1,Lpt1,Li1,Lu1,Ls1,[(I1,I2,R)|Abr]).
+
+%pour tout
+deduction_all(Lie,[(I1,all(R,C))|Lpt],Li,Lu,Ls,Abr) :-
+	setof((I2,C), member((I1,I2,R),Abr), LC2),
+	evolue_rec(LC2,Lie,Lpt,Li,Lu,Ls,Lie1,Lpt1,Li1,Lu1,Ls1),!,
+	affiche_evolution_Abox(Lie,Lpt,Li,Lu,Ls,Lie1,Lpt1,Li1,Lu1,Ls1),
+	resolution(Lie1,Lpt1,Li1,Lu1,Ls1,Abr).
