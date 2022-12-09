@@ -39,6 +39,32 @@ non_clash([(I,C)|Ls]) :-
 	\+ member((I,NC),Ls),
 	non_clash(Ls).
 	
+%resolution revoie vrai si on trouve une feuille ouverte
+resolution(Lie,Lpt,Li,Lu,Ls,Abr):-
+	non_clash(Ls),
+	complete_some(Lie,Lpt,Li,Lu,Ls,Abr).
+	
+resolution([],Lpt,Li,Lu,Ls,Abr):-
+	non_clash(Ls),
+	transformation_and([],Lpt,Li,Lu,Ls,Abr).
+	
+resolution([],Lpt,[],Lu,Ls,Abr):-
+	non_clash(Ls),
+	deduction_all([],Lpt,[],Lu,Ls,Abr).
+	
+resolution([],[],[],Lu,Ls,Abr):-
+	non_clash(Ls),
+	transformation_and([],[],[],Lu,Ls,Abr).
+	
+resolution([],[],[],[],Ls,Abr):-
+	non_clash(Ls).
+	
+%intersection
+transformation_and(Lie,Lpt,[(I,and(A,B))|Li],Lu,Ls,Abr) :-
+    evolue((I,A),Lie,Lpt,Li,Lu,Ls,Lie1,Lpt1,Li1,Lu1,Ls1),
+    evolue((I,B),Lie1,Lpt1,Li1,Lu1,Ls1,Lie2,Lpt2,Li2,Lu2,Ls2),
+    resolution(Lie2,Lpt2,Li2,Lu2,Ls2,Abr).
+	
 %affichage
 affiche_Ls([]).
 affiche_concept(some(R,C)) :-
