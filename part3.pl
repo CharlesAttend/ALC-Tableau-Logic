@@ -137,11 +137,11 @@ transformation_or(Lie, Lpt, Li, Lu, Ls, Abr) :-
 	non_clash(Ls1),
 
 	% Appel récursif
-	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
+	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr),
 
 	% __________________________________
 	% Deuxième split Br2 & nouveau noeud
-	evolue((I, C2),Lie, Lpt, Li, NewLu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2), 
+	evolue((I, C2),Lie, Lpt, Li, NewLu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2),
 	
 	% Print du split
 	affiche_evolution_Abox(Ls, Lie, Lpt, Li, Lu, Abr, Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
