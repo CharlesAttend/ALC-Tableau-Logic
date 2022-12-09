@@ -120,3 +120,36 @@ affiche_evolution_Abox(Ls1,Lie1,Lpt1,Li1,Lu1,Abr1,Ls2,Lie2,Lpt2,Li2,Lu2,Abr2):-
 	affiche_Abi(Lpt2),
 	affiche_Abi(Lu2),
 	affiche_Abr(Abr2).
+
+% Non testé
+transformation_or(Lie, Lpt, Li, Lu, Ls, Abr) :- 
+	% Suppression & extraction de la règle devenus inutile
+	enleve((I, or(C1,_)), Lu, NewLu), 
+	
+	% Premier split Br1 : 
+	evolue((I, C1), Lie, Lpt, Li, NewLu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
+	
+	% Print du split
+	affiche_evolution_Abox(Ls, Lie, Lpt, Li, Lu, Abr, Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
+	
+	% Test Clash
+	non_clash(Ls2),
+
+	% Appel récursif
+	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
+
+transformation_or(Lie, Lpt, Li, Lu, Ls, Abr) :- 
+	% Suppression & extraction de la règle devenus inutile
+	enleve((I, or(_,C2)), Lu, NewLu),
+	
+	% Deuxième split Br2
+	evolue((I, C2),Lie, Lpt, Li, NewLu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2), 
+	
+	% Print du split
+	affiche_evolution_Abox(Ls, Lie, Lpt, Li, Lu, Abr, Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
+	
+	% Test Clash
+	non_clash(Ls2),
+	
+	% Appel récursif
+	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
