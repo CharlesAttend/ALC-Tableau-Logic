@@ -49,7 +49,7 @@
         \vspace{1.5cm}
 
         \textbf{Charles Vin}\\
-        \textbf{Barthelemy Dang-Nhu}
+        \textbf{Barthélémy Dang-Nhu}
 
         \vfill
 
@@ -66,7 +66,6 @@
 
 \tableofcontents
 \newpage
-
 \section{Introduction}
 
 \section{Description générale et fonctionnement}
@@ -92,8 +91,8 @@ Pour lancer le programme entrez cette commande à la racine du projet : \verb|sw
 
 \section{\'Etape préliminaire de vérification et de mise en forme de la Tbox et de la Abox}
 \`A ce stade les Abox et Tbox ne sont pas altérées, il est donc inutile de les mettre en argument des prédicats car on peut y accéder avec les prédicats \color{blue}cnamea, cnamena, iname, rname, equiv, inst, instR\color{black}.
-\subsection{Correction syntaxique et sémentique}
-Dans cette première partie nous commençons par vérifier la correction sémentique et syntaxique des deux box. Pour ce faire nous implémentons les prédicats d'arité 1 \color{blue}concept, instance, role\color{black}\ qui vérifie si des objets sont de ce type. Les cas de base sont les suivants :
+\subsection{Correction syntaxique et sémantique}
+Dans cette première partie nous commençons par vérifier la correction sémantique et syntaxique des deux box. Pour ce faire nous implémentons les prédicats d'arité 1 \color{blue}concept, instance, role\color{black}\ qui vérifie si des objets sont de ce type. Les cas de base sont les suivants :
 
 \begin{minted}{prolog}
 concept(C) :- cnamea(C), !.
@@ -112,12 +111,12 @@ concept(some(R, C)) :- role(R), concept(C), !.
 concept(all(R, C)) :- role(R), concept(C), !.
 \end{minted}
 
-Nous utilisons ces prédicats pour définir le prédicat \color{blue}definition\color{black}\ d'arité 2 qui vérifie si la définition d'une équivalence est juste : il faut que le premier élement soit un concept non-atomique et que le deuxième soit bien la définition d'un concept :
+Nous utilisons ces prédicats pour définir le prédicat \color{blue}definition\color{black}\ d'arité 2 qui vérifie si la définition d'une équivalence est juste : il faut que le premier élément soit un concept non-atomique et que le deuxième soit bien la définition d'un concept :
 \begin{minted}{prolog}
 definition(CA, CG) :- cnamena(CA), concept(CG), !.
 \end{minted}
 
-Grâce à ce prédicat nous pouvons vérifier la Tbox avec \color{blue}verif\_Tbox\color{black}\ qui prend en argument une TBox sous forme d'une liste de d'équivalence et qui vérifie la correction syntaxique et sémentique : 
+Grâce à ce prédicat nous pouvons vérifier la Tbox avec \color{blue}verif\_Tbox\color{black}\ qui prend en argument une TBox sous forme d'une liste de d'équivalence et qui vérifie la correction syntaxique et sémantique : 
 \begin{minted}{prolog}
 verif_Tbox([(CA, CG) | Q]) :- 
     definition(CA, CG), 
@@ -125,13 +124,13 @@ verif_Tbox([(CA, CG) | Q]) :-
 verif_Tbox([]).
 \end{minted}
 On fait de même avec la Abox
-\subsection{Vérification de l'autoréférencement}
-Nous voulons ensuite s'assurer qu'il n'y a pas d'autoréférencement dans la définition des concepts non-atomiques. S'il y en a, au moment de dévelepper les concepts pour n'avoir que des concepts atomiques il y aura une boucle infinie. Nous implémentons le prédicat \color{blue}pautoref(C, Def)\color{black}\ qui prend en argmuent un concept non-atomique C et la définition de concept Def et qui est vraie ssi C n'est pas présent récursivement dans Def. Le cas de base est le suivant :
+\subsection{Vérification de l'auto-référencement}
+Nous voulons ensuite s'assurer qu'il n'y a pas d'auto-référencement dans la définition des concepts non-atomiques. S'il y en a, au moment de développer les concepts pour n'avoir que des concepts atomiques il y aura une boucle infinie. Nous implémentons le prédicat \color{blue}pautoref(C, Def)\color{black}\ qui prend en argument un concept non-atomique C et la définition de concept Def et qui est vraie ssi C n'est pas présent récursivement dans Def. Le cas de base est le suivant :
 \begin{minted}{prolog}
 pautoref(C, Def) :-cnamea(Def).
 \end{minted}
 
-Nous pouvons ainsi construire le prédicat \color{blue}verif\_Autoref(L)\color{black}\ qui prend en argument la liste des concept non-atomiques et qui vérifie s'il n'y a pas autoréferencement dans leur définition : 
+Nous pouvons ainsi construire le prédicat \color{blue}verif\_Autoref(L)\color{black}\ qui prend en argument la liste des concept non-atomiques et qui vérifie s'il n'y a pas auto-référencement dans leur définition : 
 \begin{minted}{prolog}
 verif_Autoref([]).
 verif_Autoref([C|L]) :-
@@ -140,11 +139,11 @@ verif_Autoref([C|L]) :-
 	verif_Autoref(L).
 \end{minted}
 \subsection{Mise sous forme}
-Une fois que nous sommes sûr qu'il n'y a pas d'autoréférencement on peut développer les concepts non-atomiques. Nous implémentons le prédicat \color{blue}developp(C,D)\color{black}\ qui est vraie ssi D est le developpement de C. Le cas de base est le suivant : 
+Une fois que nous sommes sûr qu'il n'y a pas d'auto-référencement on peut développer les concepts non-atomiques. Nous implémentons le prédicat \color{blue}developpe(C,D)\color{black}\ qui est vraie ssi D est le développement de C. Le cas de base est le suivant : 
 \begin{minted}{prolog}
 developpe(C, C) :- cnamea(C).
 \end{minted}
-On peut ensuite écrire le prédicat \color{blue}transforme(L1,l2)\color{black}\ qui prend en argument deux box L1 et L2 et qui est vraie ssi L2 est la box équivalent à L1 mais dans laquel les concepts non-atomiques sont développés puis mis sous formes normales négatives :
+On peut ensuite écrire le prédicat \color{blue}transforme(L1,l2)\color{black}\ qui prend en argument deux box L1 et L2 et qui est vraie si et seulement si L2 est la box équivalent à L1 mais dans laquelle les concepts non-atomiques sont développés puis mis sous formes normales négatives :
 \begin{minted}{prolog}
 transforme([], []).
 transforme([(X,C) | L], [(X,D) | M]) :- 
