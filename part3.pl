@@ -58,13 +58,7 @@ resolution([],[],[],Lu,Ls,Abr):-
 	
 resolution([],[],[],[],Ls,Abr):-
 	non_clash(Ls).
-	
-%intersection
-transformation_and(Lie,Lpt,[(I,and(A,B))|Li],Lu,Ls,Abr) :-
-    evolue((I,A),Lie,Lpt,Li,Lu,Ls,Lie1,Lpt1,Li1,Lu1,Ls1),
-    evolue((I,B),Lie1,Lpt1,Li1,Lu1,Ls1,Lie2,Lpt2,Li2,Lu2,Ls2),
-    resolution(Lie2,Lpt2,Li2,Lu2,Ls2,Abr).
-	
+
 %affichage
 affiche_Ls([]).
 affiche_concept(some(R,C)) :-
@@ -122,13 +116,12 @@ affiche_evolution_Abox(Ls1,Lie1,Lpt1,Li1,Lu1,Abr1,Ls2,Lie2,Lpt2,Li2,Lu2,Abr2):-
 	affiche_Abr(Abr2).
 
 % Non testé
-transformation_or(Lie, Lpt, Li, Lu, Ls, Abr) :- 
-	% Suppression & extraction de la règle devenus inutile
-	enleve((I, or(C1,C2)), Lu, NewLu), 
+transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :- 
+	% Suppression & extraction de la règle devenus inutile par la décomposition en paramètre
 	
 	% _________________________________
 	% Premier split Br1 & nouveau noeud
-	evolue((I, C1), Lie, Lpt, Li, NewLu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
+	evolue((I, C1), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
 	
 	% Print du split
 	affiche_evolution_Abox(Ls, Lie, Lpt, Li, Lu, Abr, Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
@@ -141,7 +134,7 @@ transformation_or(Lie, Lpt, Li, Lu, Ls, Abr) :-
 
 	% __________________________________
 	% Deuxième split Br2 & nouveau noeud
-	evolue((I, C2),Lie, Lpt, Li, NewLu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2),
+	evolue((I, C2),Lie, Lpt, Li, Lu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2),
 	
 	% Print du split
 	affiche_evolution_Abox(Ls, Lie, Lpt, Li, Lu, Abr, Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
@@ -152,12 +145,11 @@ transformation_or(Lie, Lpt, Li, Lu, Ls, Abr) :-
 	% Appel récursif
 	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
 
-transformation_and(Lie, Lpt, Li, Lu, Ls, Abr) :- 
-	% Suppression & extraction de la règle devenus inutile
-	enleve((I, and(C1,C2)), Li, Q),
+transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :- 
+	% Suppression & extraction de la règle devenus inutile par la décomposition en paramètre
 
 	% Split & nouveau noeud
-	evolue((I,C1), Lie, Lpt, Q, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
+	evolue((I,C1), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
 	evolue((I,C2), Lie1, Lpt1, Li1, Lu1, Ls1, Lie2, Lpt2, Li2, Lu2, Ls2),
 
 	% Print du split
