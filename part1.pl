@@ -1,10 +1,3 @@
-% Pour le linter qui casse les pieds
-:- dynamic cnamen/1.
-:- dynamic cnamena/1.
-:- dynamic iname/1.
-:- dynamic rname/1.
-:- discontiguous verif_Concept/1.
-
 % Vérification sémantique : 
 % Prédicat "Alphabet"
 concept(C) :- cnamea(C), !. % Vérification des concepts atomique
