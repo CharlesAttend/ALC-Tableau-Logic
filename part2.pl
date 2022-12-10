@@ -11,7 +11,7 @@ suite(R,Abi,Abi1,Tbox) :- nl,
     write('Cette réponse est incorrecte.'), nl,
     saisie_et_traitement_prop_a_demontrer(Abi,Abi1,Tbox).
 
-input_prop_type1(I,CG) :-
+input_prop_type1(I, CG) :-
     write('Ajoutons une instance de concept à la ABox :'), nl,
     write('Elle a la forme "I : C"'), nl,
     write('Entrez I :'),nl, 
@@ -26,12 +26,11 @@ input_prop_type1(I,CG) :-
         % input_prop_type1(I, CG) % boucler ne semble pas fonctionner 
     )), nl.
 
-acquisition_prop_type1(Abi,Abi1,Tbox) :- 
+acquisition_prop_type1(Abi, Abi1, Tbox) :- 
     input_prop_type1(I, CG), % User input
     transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf (comment developper avec les définitions de la Tbox sans envoyer la Tbox en param??)
-    concat(Abi,[(I, CG_dev_nnf)], Abi1),
-    write("Abi1"), write(Abi1)
-    . % ajout de l'input de l'utilisateur dans la ABox
+    concat(Abi,[(I, CG_dev_nnf)], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
+    write("Abi1"), write(Abi1). 
 
 
 input_prop_type2(C1, C2) :-
@@ -48,11 +47,10 @@ input_prop_type2(C1, C2) :-
         % input_prop_type2(C1, C2) % boucler ne semble pas fonctionner
     )), nl.
 
-acquisition_prop_type2(Abi,Abi1,Tbox) :- 
+acquisition_prop_type2(Abi, Abi1, Tbox) :- 
     input_prop_type2(C1, C2), % User input
     % Développement + nnf (comment développer avec les définitions de la Tbox sans envoyer la Tbox en param??)
     genere(Random_CName),
     transforme([(Random_CName, and(C1, C2))], [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))]),
-    concat(Abi, [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi1),
-    write("Abi1"), write(Abi1)
-    . % ajout de l'input de l'utilisateur dans la ABox
+    concat(Abi, [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
+    write("Abi1"), write(Abi1). 
