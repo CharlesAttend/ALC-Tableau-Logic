@@ -1,6 +1,6 @@
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
-  │ Tri box                                                                  │
+  │ Tri box : génère des listes contenant chaque type d'assertion: ∃,⊓,∀,⊔  │                                                                  │
   └──────────────────────────────────────────────────────────────────────────┘
  */
 tri_Abox([], [], [], [], [], []).
@@ -17,7 +17,7 @@ tri_Abox([A|L], Lie, Lpt, Li, Lu, [A|Ls]) :-
 	
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
-  │ Evolue                                                                   │
+  │ Evolue : intègre le premier paramètre dans la liste lui correspondant    │
   └──────────────────────────────────────────────────────────────────────────┘
  */
 evolue((I, some(R,C)), Lie, Lpt, Li, Lu, Ls, Lie, Lpt, Li, Lu, Ls) :-
@@ -47,7 +47,7 @@ evolue_rec([A|L], Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1) :-
 
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
-  │ Test de clash                                                            │
+  │ Test de clash : Y'a-t-il un clash dans le noeud Ls ?                     │
   └──────────────────────────────────────────────────────────────────────────┘
  */
 non_clash([]).
@@ -58,7 +58,7 @@ non_clash([(I,C) | Ls]) :-
 	
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
-  │ Resolution : Revoie vrai si on trouve une feuille ouverte                │
+  │ Resolution : Renvoie vrai si on trouve une feuille ouverte                │
   └──────────────────────────────────────────────────────────────────────────┘
  */
 resolution(Lie, Lpt, Li, Lu, Ls, Abr) :-
