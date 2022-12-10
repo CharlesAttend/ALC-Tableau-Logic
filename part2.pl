@@ -8,7 +8,7 @@ saisie_et_traitement_prop_a_demontrer(Abi,Abi1,Tbox) :- nl,
 suite(1,Abi,Abi1,Tbox) :- acquisition_prop_type1(Abi,Abi1,Tbox), !.
 suite(2,Abi,Abi1,Tbox) :- acquisition_prop_type2(Abi,Abi1,Tbox), !.
 suite(R,Abi,Abi1,Tbox) :- nl, 
-    write('Cette reponse est incorrecte.'), nl,
+    write('Cette réponse est incorrecte.'), nl,
     saisie_et_traitement_prop_a_demontrer(Abi,Abi1,Tbox).
 
 input_prop_type1(I,CG) :-
