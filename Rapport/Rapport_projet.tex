@@ -71,7 +71,7 @@
 \section{Description générale et fonctionnement}
 \subsection{Les fichiers}
 Pour une meilleure compréhension du code, nous avons séparer celui-ci en plusieurs fichier. Chacun à sa spécialisation : \begin{itemize}
-    \item \verb|T-A_box.pl| : C'est ici que l'utilisateur entre la TBox et la ABox initial.
+    \item \verb|T-A_box.pl| : C'est ici que l'utilisateur entre la TBox et la ABox initiale.
     \item \verb|run.pl| : Contient le prédicat \verb|programme/0|  qui appel les grandes étapes nécessaire à la résolution.
     \item \verb|part1.pl| : Contient les fonctions liées à la première partie décrite par le sujet.
     \item \verb|part2.pl| : Contient les fonctions liées à la deuxième partie décrite par le sujet.
@@ -203,7 +203,7 @@ input_prop_type2(C1, C2) :-
         % input_prop_type2(C1, C2) % boucler ne semble pas fonctionner
     )), nl.
 \end{minted}
-Cette fois-ci il faut générer un nom de concept aléatoire $ Random\_CName $ afin de pouvoir ajouter dans la ABox $ Random\_CName : C1 \sqcap C2 $, c'est ce qui est fait par le biais de \color{blue} genere / 1 \color{black} et \color{blue} transforme / 2 \color{black}. Puis le tout est \color{blue} concat \color{black} dans la ABox.
+Cette fois-ci il faut générer un nom de concept aléatoire $ Random\_CName $ afin de pouvoir ajouter dans la ABox $ Random\_CName : C1 \sqcap C2 $, c'est ce qui est fait par le biais de \color{blue} genere / 1 \color{black} et \color{blue} transforme / 2 \color{black}. Puis le tout est \color{blue} concat / 3 \color{black} dans la ABox.
 \begin{minted}{prolog}
 acquisition_prop_type2(Abi, Abi1, Tbox) :- 
     input_prop_type2(C1, C2), % User input
@@ -214,5 +214,43 @@ acquisition_prop_type2(Abi, Abi1, Tbox) :-
 \end{minted}
 
 \section{Démonstration de la proposition}
+Dans cette partie, nous allons démontrer par la méthode des tableaux si la Abox $ Abe $ construite dans la partie précédente, par l'ajout de la négation de l'entrée de l'utilisateur, mène à une contradiction.
+
+\subsection{Prédicat utile à l'implémentation}
+Pour faciliter l'implémentation, on commence par extraire chaque type d'assertion de la Abox pour les mettre dans 5 listes grâce au prédicat \color{blue} tri\_Abox / 6 \color{black}
+% Ne pas mettre tout le code ? Comme tu as fait avec developpe/2 dans la partie 1 ?
+\begin{minted}{prolog}
+tri_Abox([], [], [], [], [], []).
+tri_Abox([(I, some(R,C)) | L], [(I, some(R,C)) | Lie], Lpt, Li, Lu, Ls) :-
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+tri_Abox([(I, all(R,C)) | L], Lie, [(I, all(R,C)) | Lpt], Li, Lu, Ls) :-
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+tri_Abox([(I, and(C1,C2)) | L], Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls) :-
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+tri_Abox([(I, or(C1,C2)) | L], Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls) :-
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+tri_Abox([A|L], Lie, Lpt, Li, Lu, [A|Ls]) :-
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+\end{minted}
+
+Le deuxième prédicat important pour l'implémentation est \color{blue} evolue / 11 \color{black} qui prends en première paramètre une nouvelle proposition et l'ajoute dans la liste correspondante en vérifiant qu'il n'y est pas déjà. Le cas de base est 
+% Hésite pas à plus détailler si tu le sens
+\begin{minted}{prolog}
+evolue(A, Lie, Lpt, Li, Lu, Ls, Lie, Lpt, Li, Lu, Ls) :-
+    member(A, Ls).
+evolue(A, Lie, Lpt, Li, Lu, Ls, Lie, Lpt, Li, Lu, [A|Ls]).
+\end{minted}
+
+Enfin, le dernier prédicat qui nous sera utile pour la suite est \color{blue} non\_clash / 1 \color{black} qui vérifie l'absence de clash dans la liste d'assertion reçu.
+\begin{minted}{prolog}
+non_clash([]).
+non_clash([(I,C) | Ls]) :-
+    nnf(not(C), NC),
+    \+ member((I, NC), Ls),
+    non_clash(Ls).
+\end{minted}
+
+\subsection{Algorithme de résolution}
+
 
 \end{document}
