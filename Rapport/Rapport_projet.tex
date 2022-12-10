@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper, margin=2.5cm]{geometry}
 \usepackage{graphicx} 
@@ -143,7 +143,7 @@ Une fois que nous sommes sûr qu'il n'y a pas d'auto-référencement on peut dé
 \begin{minted}{prolog}
 developpe(C, C) :- cnamea(C).
 \end{minted}
-On peut ensuite écrire le prédicat \color{blue}transforme(L1,l2)\color{black}\ qui prend en argument deux box L1 et L2 et qui est vraie si et seulement si L2 est la box équivalent à L1 mais dans laquelle les concepts non-atomiques sont développés puis mis sous formes normales négatives :
+On peut ensuite écrire le prédicat \color{blue}transforme(L1,L2)\color{black}\ qui prend en argument deux box L1 et L2 et qui est vraie si et seulement si L2 est la box équivalent à L1 mais dans laquelle les concepts non-atomiques sont développés puis mis sous formes normales négatives :
 \begin{minted}{prolog}
 transforme([], []).
 transforme([(X,C) | L], [(X,D) | M]) :- 
@@ -151,7 +151,68 @@ transforme([(X,C) | L], [(X,D) | M]) :-
 	nnf(E, D),
 	transforme(L, M).
 \end{minted}
+
 \section{Saisie de la proposition à montrer}
+Dans la deuxième partie, l'utilisateur peut choisir d'entrer deux types de propositions à démontrer : 
+\begin{itemize}
+    \item Un proposition de type $ I : C $ qui sera géré par le prédicat \color{blue}acquisition\_prop\_type1 / 3 \color{black}
+    \item Un proposition de type $ C1 \sqcap C2 \sqsubseteq \bot  $ qui sera géré par le prédicat \color{blue}acquisition\_prop\_type2 / 3 \color{black}
+\end{itemize}
+
+\subsection{Proposition de type 1 : $ I : C $ }
+On commence par demander à l'utilisateur d'entrer $ I $ et $ C $ par le biais du prédicat \color{blue}input\_prop\_type1\color{black}\. C'est également ici que l'on vérifie si l'entrée de l'utilisateur est correct syntaxiquement avec le prédicat \color{blue}instanciationC / 2\color{black}.
+\begin{minted}{prolog}
+input_prop_type1(I, CG) :-
+    write('Ajoutons une instance de concept à la ABox :'), nl,
+    write('Elle a la forme "I : C"'), nl,
+    write('Entrez I :'),nl, 
+    read(I),nl,
+    write('Entrez C :'),nl, 
+    read(CG),
+    (instanciationC(I, CG) -> % if 
+        write("Input correct")
+        ; ( % else
+        write('Erreur : I n\'est pas une instance déclarée ou C n\'est pas un concept'), nl,
+        write('Veuillez recommencer'), nl
+        % input_prop_type1(I, CG) % boucler ne semble pas fonctionner 
+        )), nl.
+\end{minted}
+Dans la suite d'\color{blue} acquisition\_prop\_type1 \color{black}\ on effectue quelques traitements sur $ \neg C $ en remplaçant de manière récursive les identificateurs de concepts complexes par leur définition et en mettant le tout sous forme normale négative (prédicat \color{blue} transforme \color{black}). On peut ensuite ajouter le tout dans la ABox avec \color{blue} concat \color{black}.
+\begin{minted}{prolog}
+acquisition_prop_type1(Abi,Abi1,Tbox) :- 
+    input_prop_type1(I, CG), % User input
+    transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf
+    concat(Abi,[(I, CG_dev_nnf)], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
+    write("Abi1"), write(Abi1). 
+\end{minted}
+
+\subsection{Proposition de type 2 : $ C1 \sqcap C2 \sqsubseteq \bot $ }
+Comme précédemment, on commencer par demander à l'utilisateur d'entrer $ C1 $ et $ C2 $ par le biais du prédicat \color{blue} input\_prop\_type2 / 2 \color{black}. Et on vérifie si l'entrée de l'utilisateur est correct syntaxiquement avec le prédicat \color{blue}concept / 2\color{black}.
+\begin{minted}{prolog}
+input_prop_type2(C1, C2) :-
+    write('Ajoutons une proposition de type 2.'), nl,
+    write('Entrez C1 :'),nl, 
+    read(C1),nl,
+    write('Entrez C2 :'),nl, 
+    read(C2),
+    (concept(and(C1, C2)) -> % if 
+        write("Input correct")
+        ; ( % else
+        write('Erreur : C1 ou C2 n\'est pas un concept déclarée'), nl,
+        write('Veuillez recommencer'), nl
+        % input_prop_type2(C1, C2) % boucler ne semble pas fonctionner
+    )), nl.
+\end{minted}
+Cette fois-ci il faut générer un nom de concept aléatoire $ Random\_CName $ afin de pouvoir ajouter dans la ABox $ Random\_CName : C1 \sqcap C2 $, c'est ce qui est fait par le biais de \color{blue} genere / 1 \color{black} et \color{blue} transforme / 2 \color{black}. Puis le tout est \color{blue} concat \color{black} dans la ABox.
+\begin{minted}{prolog}
+acquisition_prop_type2(Abi, Abi1, Tbox) :- 
+    input_prop_type2(C1, C2), % User input
+    genere(Random_CName),
+    transforme([(Random_CName, and(C1, C2))], [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))]), % Développement + nnf
+    concat(Abi, [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
+    write("Abi1"), write(Abi1).
+\end{minted}
+
 \section{Démonstration de la proposition}
 
 \end{document}

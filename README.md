@@ -26,3 +26,6 @@ Si je comprend bien le sujet, on doit :
 
 ## Partie 3
 - [ ] 
+
+## Rapport : 
+- [ ] **Bien relire le code listé pour être sur de pas avoir laisser des prints ou commentaire**
