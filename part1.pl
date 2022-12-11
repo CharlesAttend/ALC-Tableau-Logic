@@ -1,4 +1,8 @@
-% Vérification sémantique : 
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Vérification sémantique :                                                │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 % Prédicat "Alphabet"
 concept(C) :- cnamea(C), !. % Vérification des concepts atomique
 concept(CG) :- cnamena(CG), !. % Vérification des concepts non atomique
@@ -12,7 +16,11 @@ concept(or(C1, C2)) :- concept(C1), concept(C2), !.
 concept(some(R, C)) :- role(R), concept(C), !.
 concept(all(R, C)) :- role(R), concept(C), !.
 
-% Vérification syntaxique
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Vérification syntaxique                                                  │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 % Pour la Tbox
 definition(CA, CG) :- cnamena(CA), concept(CG), !.
 verif_Tbox([(CA, CG) | Q]) :- 
@@ -32,7 +40,11 @@ verif_AboxR([(I1, I2, R) | Q]) :- instanciationR(I1, I2, R), verif_AboxR(Q), !.
 
 verif_Abox([AboxC | AboxR]) :- verif_AboxC(AboxC), verif_AboxR(AboxR), !.
 
-% Auto-référencement
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Auto-référencement                                                       │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 % verif_Autoref(Lcc,Lca) vrai ssi les concept non atomique de Lcc ne sont pas auto-référencé
 verif_Autoref([]).
 verif_Autoref([C|L]) :-
@@ -68,7 +80,12 @@ pautoref(C, some(R,D)) :-
 pautoref(C, not(D)) :-
 	pautoref(C,D).
 	
-% developpe(C,D) vrai ssi D est le développement atomique de C
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Traitement des Boxs                                                      │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
+% developpe(C, D) vrai ssi D est le développement atomique de C
 developpe(C, C) :- cnamea(C).
 
 developpe(C, D) :- 

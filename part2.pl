@@ -11,6 +11,12 @@ suite(R,Abi,Abi1,Tbox) :- nl,
     write('Cette réponse est incorrecte.'), nl,
     saisie_et_traitement_prop_a_demontrer(Abi,Abi1,Tbox).
 
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Acquisition des propositions de type 1 : I : C                           │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
+
 input_prop_type1(I, CG) :-
     write('Ajoutons une instance de concept à la ABox :'), nl,
     write('Elle a la forme "I : C"'), nl,
@@ -30,6 +36,12 @@ acquisition_prop_type1(Abi, Abi1, Tbox) :-
     transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf
     concat(Abi,[(I, CG_dev_nnf)], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
     write("Abi1"), write(Abi1). 
+
+/* 
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ Acquisition des propositions de type 2 : C1 ⊓ C2 ⊑ ⊥                     │
+  └──────────────────────────────────────────────────────────────────────────┘
+ */
 
 input_prop_type2(C1, C2) :-
     write('Ajoutons une proposition de la forme C1 ⊓ C2 ⊑ ⊥.'), nl,
