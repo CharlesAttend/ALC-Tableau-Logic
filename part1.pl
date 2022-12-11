@@ -41,9 +41,16 @@ verif_Autoref([C|L]) :-
 	verif_Autoref(L).
 
 % pautoref(C, Def, Lca) vrai ssi le concept non atomique C n'est pas dans la def récursive Def
+
 pautoref(C, Def) :-
 	cnamea(Def).
-	
+
+pautoref(C, Def) :-
+	C \== Def,
+	cnamena(Def),
+	equiv(Def, Def_developpe),
+	pautoref(C, Def_developpe).
+
 pautoref(C, and(D1,D2)) :-
 	pautoref(C, D1),
 	pautoref(C, D2).
