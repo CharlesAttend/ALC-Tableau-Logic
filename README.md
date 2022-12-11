@@ -17,7 +17,7 @@ Si je comprend bien le sujet, on doit :
 - [X] `traitement_Abox` : Same (Part I remarque 4)
 - [ ] Changer les paramètres pour qu'on recoivent la ABox, Tbox en param comme demandé en consigne
 - [X] Rename `transforme` en `traitement ABox` et `Traitement_TBox`
-- [ ] Est-ce que `transforme` a été testé car je crois de dans les Box fournis y'a rien a développer de base
+- [X] Est-ce que `transforme` a été testé car je crois de dans les Box fournis y'a rien a développer de base
 
 ## Partie 2
 - [ ] Vérifier que `transforme` fait son taf avec une liste de taille 1

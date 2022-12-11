@@ -15,42 +15,39 @@ input_prop_type1(I, CG) :-
     write('Ajoutons une instance de concept à la ABox :'), nl,
     write('Elle a la forme "I : C"'), nl,
     write('Entrez I :'),nl, 
-    read(I),nl,
+    read(I), writef('I : %w', [I]), nl, nl,
     write('Entrez C :'),nl, 
-    read(CG),
+    read(CG), writef('C : %w', [C]), nl, nl,
     (instanciationC(I, CG) -> % if 
-        write("Input correct")
+        writef('%w : %w', [I, CG]), nl
         ; ( % else
-        write('Erreur : I n\'est pas une instance déclarée ou C n\'est pas un concept'), nl,
+        write('[ERREUR] : I n\'est pas une instance déclarée ou C n\'est pas un concept'), nl,
         write('Veuillez recommencer'), nl
-        % input_prop_type1(I, CG) % boucler ne semble pas fonctionner 
     )), nl.
 
 acquisition_prop_type1(Abi, Abi1, Tbox) :- 
     input_prop_type1(I, CG), % User input
-    transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf (comment developper avec les définitions de la Tbox sans envoyer la Tbox en param??)
+    transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf
     concat(Abi,[(I, CG_dev_nnf)], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
     write("Abi1"), write(Abi1). 
 
-
 input_prop_type2(C1, C2) :-
     write('Ajoutons une proposition de la forme C1 ⊓ C2 ⊑ ⊥.'), nl,
-    write('Entrez C1 :'),nl, 
-    read(C1),nl,
-    write('Entrez C2 :'),nl, 
-    read(C2),
+    write('Entrez C1 :'), nl, 
+    read(C1), nl, writef('C1 : %w', [C1]), nl, nl,
+    write('Entrez C2 :'), nl, 
+    read(C2),nl, writef('C2 : %w', [C2]), nl, nl,
     (concept(and(C1, C2)) -> % if 
-        write("Input correct")
+        writef("%w ⊓ %w ⊑ ⊥", [C1, C2]), nl
         ; ( % else
         write('Erreur : C1 ou C2 n\'est pas un concept déclarée'), nl,
         write('Veuillez recommencer'), nl
-        % input_prop_type2(C1, C2) % boucler ne semble pas fonctionner
     )), nl.
 
 acquisition_prop_type2(Abi, Abi1, Tbox) :- 
     input_prop_type2(C1, C2), % User input
-    % Développement + nnf (comment développer avec les définitions de la Tbox sans envoyer la Tbox en param??)
+    % Développement + nnf
     genere(Random_CName),
     transforme([(Random_CName, and(C1, C2))], [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))]),
     concat(Abi, [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
-    write("Abi1"), write(Abi1). 
+    write("Abi1"), write(Abi1).
