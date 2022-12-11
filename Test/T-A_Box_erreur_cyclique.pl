@@ -1,4 +1,4 @@
-% Test T-Box fausse 
+% Test T-Box avec cycle sur sculpture et sculpteur 
 cnamena(sculpture).
 rname(creePar).
 equiv(sculpture, and(objet, all(creePar,sculpteur))).
