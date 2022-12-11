@@ -1,4 +1,8 @@
-% Concepts atomiques, rôles & instances
+% Test T-Box fausse 
+inst(aCree, personne).
+
+
+% Concepts atomique, rôles & instances
 cnamea(personne).
 cnamea(livre).
 cnamea(objet).

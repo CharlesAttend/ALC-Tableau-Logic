@@ -1,3 +1,7 @@
+% Test T-Box fausse 
+equiv(aCree,and(personne,some(aEnfant,anything))).
+
+
 % Concepts atomiques, rôles & instances
 cnamea(personne).
 cnamea(livre).

@@ -1,8 +1,14 @@
-% Concepts atomiques, rôles & instances
+% Test T-Box fausse 
+cnamena(sculpture).
+rname(creePar).
+equiv(sculpture, and(objet, all(creePar,sculpteur))).
+
+
+% Concepts atomique, rôles & instances
 cnamea(personne).
 cnamea(livre).
 cnamea(objet).
-cnamea(sculpture).
+% cnamea(sculpture).
 cnamea(anything).
 cnamea(nothing).
 cnamena(auteur).
