@@ -87,46 +87,46 @@ resolution([], [], [], [], Ls, Abr):-
  */
 affiche_Ls([]).
 affiche_concept(some(R, C)) :-
-	write('\u2203'),
+	write(' \u2203 '),
 	write(R),
 	write('.'),
 	affiche_concept(C).
 affiche_concept(all(R, C)) :-
-	write('\u2200'),
+	write(' \u2200 '),
 	write(R),
 	write('.'),
 	affiche_concept(C),!.
 affiche_concept(and(C1, C2)) :-
 	affiche_concept(C1),
-	write('\u2A05'),
+	write(' \u2A05 '),
 	affiche_concept(C2).
 affiche_concept(or(C1, C2)) :-
 	affiche_concept(C1),!,
-	write('\u2A06'),
+	write(' \u2A06 '),
 	affiche_concept(C2),!.
 affiche_concept(not(C)) :-
-	write('\u00AC'),
+	write(' \u00AC '),
 	affiche_concept(C),!.
 affiche_concept(anything) :-
-	write('\u22A4').
+	write(' \u22A4 ').
 affiche_concept(nothing) :-
-	write('\u22A5').
+	write(' \u22A5 ').
 affiche_concept(C) :-
 	write(C).
 	
 affiche_Abi([]).
 affiche_Abi([(I, C) | L]):-
-	write(I), write(':'), affiche_concept(C),nl,
+	write(I), write(' : '), affiche_concept(C),nl,
 	affiche_Abi(L),!.
 
 affiche_Abr([]).
 affiche_Abr([(I1, I2, R) | L]) :-
-	write('<'), write(I1), write(','), write(I2), write('>:'),
+	write('<'), write(I1), write(', '), write(I2), write('> : '),
 	write(R),nl,
 	affiche_Abr(L),!.
 
 affiche_evolution_Abox(Ls1, Lie1, Lpt1, Li1, Lu1, Abr1, Ls2, Lie2, Lpt2, Li2, Lu2, Abr2):-
-	write("Etat de départ :"),nl,
+	write("\033[4;30mEtat de départ :\033[0m"),nl,nl,
 	affiche_Abi(Ls1),!,
 	affiche_Abi(Lie1),!,
 	affiche_Abi(Lpt1),!,
@@ -134,13 +134,14 @@ affiche_evolution_Abox(Ls1, Lie1, Lpt1, Li1, Lu1, Abr1, Ls2, Lie2, Lpt2, Li2, Lu
 	affiche_Abi(Lu1),!,
 	affiche_Abr(Abr1),!,
 	nl,
-	write("Etat d'arrivée :"),nl,!,
+	write("\033[4;30mEtat d'arrivée :\033[0m"),nl,nl,!,
 	affiche_Abi(Ls2),!,
 	affiche_Abi(Lie2),!,
 	affiche_Abi(Lpt2),!,
 	affiche_Abi(Li2),!,
 	affiche_Abi(Lu2),!,
-	affiche_Abr(Abr2),!.
+	affiche_Abr(Abr2),!,
+	nl, write('============================='), nl, nl.
 
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐

@@ -36,7 +36,8 @@ deuxieme_etape(Abi,Abi1,Tbox) :-
 
 troisieme_etape(Abi,Abr) :-
     tri_Abox(Abi,Lie,Lpt,Li,Lu,Ls),
-    resolution(Lie,Lpt,Li,Lu,Ls,Abr).
+    resolution(Lie,Lpt,Li,Lu,Ls,Abr),
+    nl,write('Youpiiiiii, on a demontre la proposition initiale !!!'), nl.
 
 programme :-
     load_files('helper.pl'),

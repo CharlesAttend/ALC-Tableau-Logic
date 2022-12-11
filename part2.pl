@@ -25,17 +25,17 @@ input_prop_type1(I, CG) :-
     write('Entrez C :'),nl, 
     read(CG), writef('C : %w', [C]), nl, nl,
     (instanciationC(I, CG) -> % if 
-        writef('%w : %w', [I, CG]), nl
+        writef('%w : %w', [I, CG])
         ; ( % else
-        write('[ERREUR] : I n\'est pas une instance déclarée ou C n\'est pas un concept'), nl,
+        write('\033[1;31m[ERREUR] : I n\'est pas une instance déclarée ou C n\'est pas un concept\033[0m'), nl,
         write('Veuillez recommencer'), nl
-    )), nl.
+    )).
 
 acquisition_prop_type1(Abi, Abi1, Tbox) :- 
     input_prop_type1(I, CG), % User input
     transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf
     concat(Abi,[(I, CG_dev_nnf)], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
-    write("Abi1"), write(Abi1). 
+    write("Abi1"), write(Abi1),nl. 
 
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
@@ -50,11 +50,11 @@ input_prop_type2(C1, C2) :-
     write('Entrez C2 :'), nl, 
     read(C2),nl, writef('C2 : %w', [C2]), nl, nl,
     (concept(and(C1, C2)) -> % if 
-        writef("%w ⊓ %w ⊑ ⊥", [C1, C2]), nl
+        writef("%w ⊓ %w ⊑ ⊥", [C1, C2])
         ; ( % else
-        write('Erreur : C1 ou C2 n\'est pas un concept déclarée'), nl,
+        write('\033[1;31m[ERREUR] : C1 ou C2 n\'est pas un concept déclarée\033[0m'), nl,
         write('Veuillez recommencer'), nl
-    )), nl.
+    )).
 
 acquisition_prop_type2(Abi, Abi1, Tbox) :- 
     input_prop_type2(C1, C2), % User input
@@ -62,4 +62,4 @@ acquisition_prop_type2(Abi, Abi1, Tbox) :-
     genere(Random_CName),
     transforme([(Random_CName, and(C1, C2))], [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))]),
     concat(Abi, [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
-    write("Abi1"), write(Abi1).
+    write("Abi1"), write(Abi1),nl.
