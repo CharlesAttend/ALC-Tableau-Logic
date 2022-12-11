@@ -90,7 +90,6 @@ Pour lancer le programme entrez cette commande à la racine du projet : \verb|sw
 
 
 \section{\'Etape préliminaire de vérification et de mise en forme de la Tbox et de la Abox}
-\`A ce stade les Abox et Tbox ne sont pas altérées, il est donc inutile de les mettre en argument des prédicats car on peut y accéder avec les prédicats \color{blue}cnamea, cnamena, iname, rname, equiv, inst, instR\color{black}.
 \subsection{Correction syntaxique et sémantique}
 Dans cette première partie nous commençons par vérifier la correction sémantique et syntaxique des deux box. Pour ce faire nous implémentons les prédicats d'arité 1 \color{blue}concept, instance, role\color{black}\ qui vérifie si des objets sont de ce type. Les cas de base sont les suivants :
 
@@ -138,6 +137,7 @@ verif_Autoref([C|L]) :-
 	pautoref(C, Def_C),
 	verif_Autoref(L).
 \end{minted}
+L'utilisation d'equiv nous permet de récupérer directement la définition de C, sans avoir à passer une box en argument. En effet les box n'ont juste là pas été altérée, on peut donc récupérer toutes les informations nécessaires avec les prédicats  \color{blue}cnamea, cnamena, iname, rname, equiv, inst, instR\color{black}.
 \subsection{Mise sous forme}
 Une fois que nous sommes sûr qu'il n'y a pas d'auto-référencement on peut développer les concepts non-atomiques. Nous implémentons le prédicat \color{blue}developpe(C,D)\color{black}\ qui est vraie ssi D est le développement de C. Le cas de base est le suivant : 
 \begin{minted}{prolog}
@@ -234,15 +234,17 @@ tri_Abox([A|L], Lie, Lpt, Li, Lu, [A|Ls]) :-
     tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
 \end{minted}
 
-Le deuxième prédicat important pour l'implémentation est \color{blue} evolue / 11 \color{black} qui prends en première paramètre une nouvelle proposition et l'ajoute dans la liste correspondante en vérifiant qu'il n'y est pas déjà. Le cas de base est 
+Le deuxième prédicat important pour l'implémentation est \color{blue} evolue / 11 \color{black} qui prends en première paramètre une nouvelle proposition et l'ajoute dans la liste correspondante en vérifiant qu'il n'y est pas déjà. Voici l'exemple avec Lie :
 % Hésite pas à plus détailler si tu le sens
 \begin{minted}{prolog}
-evolue(A, Lie, Lpt, Li, Lu, Ls, Lie, Lpt, Li, Lu, Ls) :-
-    member(A, Ls).
-evolue(A, Lie, Lpt, Li, Lu, Ls, Lie, Lpt, Li, Lu, [A|Ls]).
+evolue((I, some(R,C)), Lie, Lpt, Li, Lu, Ls, Lie, Lpt, Li, Lu, Ls) :-
+    member((I, some(R,C)), Lie).
+evolue((I, some(R,C)), Lie, Lpt, Li, Lu, Ls, [(I, some(R,C)) | Lie], Lpt, Li, Lu, Ls).
 \end{minted}
+Si l'élément à ajouter est déjà présent dans la liste, l'appel de \color{blue}evolue\color{black}\ va s'unifier pour les deux clauses de Horn ci dessus, c'est pour cela que lors d'un appel d'\color{blue}evolue\color{black}\  il faut mettre le prédicat d'arrêt \color{blue}!\color{black}\ après pour que seul la première clause soit utilisée. On pourrait aussi mettre comme condition de la deuxième clause \color{blue}\textbackslash+ member((I, some(R,C)), Lie)\color{black}\ mais le programme perdrait en efficacité car il y aurait potentiellement deux parcours de liste. Nous avons aussi besoin d'une fonction \color{blue}evolue\_rec\color{black}\ qui est similaire mais qui prend une liste d'instanciation en premier argument et applique \color{blue}evolue\color{black}\ à tous ses éléments.\\
 
-Enfin, le dernier prédicat qui nous sera utile pour la suite est \color{blue} non\_clash / 1 \color{black} qui vérifie l'absence de clash dans la liste d'assertion reçu.
+
+Enfin, le dernier prédicat qui nous sera utile pour la suite est \color{blue} non\_clash / 1 \color{black}\ qui vérifie l'absence de clash dans la liste d'assertion reçu.
 \begin{minted}{prolog}
 non_clash([]).
 non_clash([(I,C) | Ls]) :-
@@ -250,8 +252,34 @@ non_clash([(I,C) | Ls]) :-
     \+ member((I, NC), Ls),
     non_clash(Ls).
 \end{minted}
+L'appel de \color{blue}nnf\color{black}\ permet de transformer un $\neg\neg$C en C et ne change pas un $\neg$C.
 
+Nous avons aussi implémenter divers fonctions d'affichage qui peut représenter des Abox avec une écriture infixe des concepts.
 \subsection{Algorithme de résolution}
+Nous avons implémenter le prédicat resolution/6 qui prend en argument un ABox triée et qui applique la méthode des tableaux, elle renvoie vraie ssi une feuille ouverte est trouvée. Le cas de base est donc le suivant :
+\begin{minted}{prolog}
+resolution([], [], [], [], Ls, _):-
+	non_clash(Ls).
+\end{minted}
 
-
+Nous allons ensuite définir cette fonction recursivement en utilisant l'ordre de priorité donnée dans le sujet :
+\begin{minted}{prolog}
+resolution(Lie, Lpt, Li, Lu, Ls, Abr) :-
+    non_clash(Ls),
+    complete_some(Lie, Lpt, Li, Lu, Ls, Abr).
+	
+resolution([], Lpt, Li, Lu, Ls, Abr) :-
+    non_clash(Ls),
+    transformation_and([], Lpt, Li, Lu, Ls, Abr).
+	
+resolution([], Lpt, [], Lu, Ls, Abr) :-
+    non_clash(Ls),
+    deduction_all([], Lpt, [], Lu, Ls, Abr).
+	
+resolution([], [], [], Lu, Ls, Abr):-
+	non_clash(Ls),
+	transformation_and([], [], [], Lu, Ls, Abr).
+\end{minted}
 \end{document}
+Footer
+© 2022 GitHub, Inc. 
