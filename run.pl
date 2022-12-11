@@ -6,22 +6,22 @@ premiere_etape(Tbox, Abi, Abr) :-
     % Vérification de la Tbox
     write('[LOG] Vérification de la TBox ...'), nl,
     (verif_Tbox(Tboxt) ->
-    write('[LOG] Vérification de la TBox réussi'), nl;
-    write('[ERREUR] Il y a erreur de syntaxe dans la TBox'), nl, halt),
+        write('[LOG] Vérification de la TBox réussi'), nl;
+        write('[ERREUR] Il y a erreur de syntaxe dans la TBox'), nl, halt),
     
     % Vérification de la Abox
     write('[LOG] Vérification de la ABox ...'), nl,
     (verif_Abox([Abit | Abr]) ->
-    write('[LOG] Vérification de la ABox réussi'), nl;
-    write('[ERREUR] Il y a erreur de syntaxe dans la ABox'), nl, halt),
+        write('[LOG] Vérification de la ABox réussi'), nl;
+        write('[ERREUR] Il y a erreur de syntaxe dans la ABox'), nl, halt),
     
     % Vérification des auto-référencements
     setof(X, cnamena(X), Lcc),    % Récupération de la liste des concepts non atomiques
     setof(Y, cnamea(Y), Lca),     % Récupération de la liste des concepts atomiques
     (verif_Autoref(Lcc) ->
-    write('[LOG] Il n\'y a pas auto-référencement dans la TBox'), nl ;
-    write('[ERREUR] Il y a auto-référencement dans la TBox'), nl, halt),
-    
+        write('[LOG] Il n\'y a pas auto-référencement dans la TBox'), nl ;
+        write('[ERREUR] Il y a auto-référencement dans la TBox'), nl, halt),
+
     write('[LOG] Transformation des boxs en développant les concepts complexes puis mise sous forme normale négative...'), nl,
     transforme(Abit, Abi),
     % write('abi:'), write(Abi), nl,
