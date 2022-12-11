@@ -43,12 +43,13 @@ programme :-
     load_files('part1.pl'),
     load_files('part2.pl'),
     load_files('part3.pl'),
-    load_files('T-A_Box.pl'),
+    % load_files('T-A_Box.pl'),
     % Test 
     % load_files('./Test/T-A_Box_erreur_syntaxe1.pl'),
     % load_files('./Test/T-A_Box_erreur_syntaxe2.pl'),
     % load_files('./Test/T-A_Box_erreur_syntaxe3.pl'),
     % load_files('./Test/T-A_Box_erreur_cyclique.pl'),
+    % load_files('./Test/T-A_Box_def_cmplx_a_dev.pl'),
     
     premiere_etape(Tbox, Abi, Abr),             % Call de la première partie
     deuxieme_etape(Abi,Abi1,Tbox),
