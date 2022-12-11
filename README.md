@@ -20,7 +20,7 @@ Si je comprend bien le sujet, on doit :
 - [X] Est-ce que `transforme` a été testé car je crois de dans les Box fournis y'a rien a développer de base
 
 ## Partie 2
-- [ ] Vérifier que `transforme` fait son taf avec une liste de taille 1
+- [X] Vérifier que `transforme` fait son taf avec une liste de taille 1
 
 ## Partie 3
 - [ ] 
