@@ -7,7 +7,7 @@ saisie_et_traitement_prop_a_demontrer(Abi,Abi1,Tbox) :- nl,
 
 suite(1,Abi,Abi1,Tbox) :- acquisition_prop_type1(Abi,Abi1,Tbox), !.
 suite(2,Abi,Abi1,Tbox) :- acquisition_prop_type2(Abi,Abi1,Tbox), !.
-suite(R,Abi,Abi1,Tbox) :- nl, 
+suite(_,Abi,Abi1,Tbox) :- nl, 
     write('Cette réponse est incorrecte.'), nl,
     saisie_et_traitement_prop_a_demontrer(Abi,Abi1,Tbox).
 
@@ -35,7 +35,8 @@ acquisition_prop_type1(Abi, Abi1, Tbox) :-
     input_prop_type1(I, CG), % User input
     transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf
     concat(Abi,[(I, CG_dev_nnf)], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
-    write("Abi1"), write(Abi1),nl. 
+    %write("Abi1"), write(Abi1),
+    nl. 
 
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
@@ -62,4 +63,5 @@ acquisition_prop_type2(Abi, Abi1, Tbox) :-
     genere(Random_CName),
     transforme([(Random_CName, and(C1, C2))], [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))]),
     concat(Abi, [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
-    write("Abi1"), write(Abi1),nl.
+    %write("Abi1"), write(Abi1),
+    nl.
