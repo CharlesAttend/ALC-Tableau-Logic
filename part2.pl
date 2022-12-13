@@ -28,7 +28,7 @@ input_prop_type1(I, CG) :-
         writef('%w : %w', [I, CG])
         ; ( % else
         write('\033[1;31m[ERREUR] : I n\'est pas une instance déclarée ou C n\'est pas un concept\033[0m'), nl,
-        write('Veuillez recommencer'), nl
+        write('Veuillez recommencer'), nl, fail
     )).
 
 acquisition_prop_type1(Abi, Abi1, Tbox) :- 
@@ -54,7 +54,7 @@ input_prop_type2(C1, C2) :-
         writef("%w ⊓ %w ⊑ ⊥", [C1, C2])
         ; ( % else
         write('\033[1;31m[ERREUR] : C1 ou C2 n\'est pas un concept déclarée\033[0m'), nl,
-        write('Veuillez recommencer'), nl
+        write('Veuillez recommencer'), nl, fail
     )).
 
 acquisition_prop_type2(Abi, Abi1, Tbox) :- 
