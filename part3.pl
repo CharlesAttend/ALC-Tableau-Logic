@@ -236,7 +236,7 @@ complete_some([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr) :-
 deduction_all(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr) :-
 	write('Utilisation de la règle \u2200 sur : '),affiche_Abi([(I1, all(R,C))]),nl,
 	% Nouveau noeud
-	setof((I2, C),  member((I1, I2, R), Abr),  LC2), 
+	findall((I2, C),  member((I1, I2, R), Abr),  LC2), 
 	evolue_rec(LC2, Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
 	
 	% Print du noeud
