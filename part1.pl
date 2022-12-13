@@ -1,3 +1,6 @@
+% Supprime les warnings "Not together in source file"
+:- discontiguous concept/1.
+
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
   │ Vérification sémantique :                                                │
