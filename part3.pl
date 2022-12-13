@@ -236,6 +236,11 @@ complete_some([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr) :-
 deduction_all(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr) :-
 	(bagof((I2, C),  member((I1, I2, R), Abr),  LC2) -> 
 		write('Utilisation de la règle \u2200 sur : '), affiche_Abi([(I1, all(R,C))]), writef('et < %w : %w> : %w', [I1, I2, R]),nl ;
+		% Problème de ce print : Utilisation de la règle ∀ sur : michelAnge :  ∀ aEcrit. ¬ livre et < michelAnge : _8578> : aEcrit
+		% La variable s'affiche pas
+		% Mais elle est dans LC2 = [(sonnet : not(livre))] => j'ai essayé de le décomposer en vain
+		% Si t'arrive à le fix on aura un beau print :D 
+
 		write('Tentative d\'utilisation de la règle \u2200 sur : '), affiche_Abi([(I1, all(R,C))]), writef('car il n\'y a pas de b tel que < %w : b > : %w', [I1, R]),nl
 	),
 
