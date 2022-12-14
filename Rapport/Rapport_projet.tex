@@ -94,25 +94,25 @@ Pour lancer le programme entrez cette commande à la racine du projet : \verb|sw
 Dans cette première partie nous commençons par vérifier la correction sémantique et syntaxique des deux box. Pour ce faire nous implémentons les prédicats d'arité 1 \color{blue}concept, instance, role\color{black}\ qui vérifie si des objets sont de ce type. Les cas de base sont les suivants :
 
 \begin{minted}{prolog}
-concept(C) :- cnamea(C), !.
-concept(CG) :- cnamena(CG), !. 
-instance(I) :- iname(I), !.
-role(R) :- rname(R), !. 
+concept(C) :- cnamea(C).
+concept(CG) :- cnamena(CG). 
+instance(I) :- iname(I).
+role(R) :- rname(R). 
 \end{minted}
 
 Le prédicat \color{blue}concept\color{black}\ nécessite de la récursivité à cause des concepts non-atomiques. Nous vérifions la grammaire avec les prédicats suivants :
 
 \begin{minted}{prolog}
-concept(not(C)) :- concept(C), !.
-concept(and(C1, C2)) :- concept(C1), concept(C2), !.
-concept(or(C1, C2)) :- concept(C1), concept(C2), !.
-concept(some(R, C)) :- role(R), concept(C), !.
-concept(all(R, C)) :- role(R), concept(C), !.
+concept(not(C)) :- concept(C).
+concept(and(C1, C2)) :- concept(C1), concept(C2).
+concept(or(C1, C2)) :- concept(C1), concept(C2).
+concept(some(R, C)) :- role(R), concept(C).
+concept(all(R, C)) :- role(R), concept(C).
 \end{minted}
 
 Nous utilisons ces prédicats pour définir le prédicat \color{blue}definition\color{black}\ d'arité 2 qui vérifie si la définition d'une équivalence est juste : il faut que le premier élément soit un concept non-atomique et que le deuxième soit bien la définition d'un concept :
 \begin{minted}{prolog}
-definition(CA, CG) :- cnamena(CA), concept(CG), !.
+definition(CA, CG) :- cnamena(CA), concept(CG).
 \end{minted}
 
 Grâce à ce prédicat nous pouvons vérifier la Tbox avec \color{blue}verif\_Tbox\color{black}\ qui prend en argument une TBox sous forme d'une liste de d'équivalence et qui vérifie la correction syntaxique et sémantique : 
@@ -122,11 +122,11 @@ verif_Tbox([(CA, CG) | Q]) :-
     verif_Tbox(Q).
 verif_Tbox([]).
 \end{minted}
-On fait de même avec la Abox
+On fait de même avec la Abox en vérifiant l'instanciation des concepts avec \color{blue}instanciationC(I, CG)\color{black}\ et l'instanction des relations avec \color{blue}instanciationR(I1, I2, R)\color{black}.
 \subsection{Vérification de l'auto-référencement}
 Nous voulons ensuite s'assurer qu'il n'y a pas d'auto-référencement dans la définition des concepts non-atomiques. S'il y en a, au moment de développer les concepts pour n'avoir que des concepts atomiques il y aura une boucle infinie. Nous implémentons le prédicat \color{blue}pautoref(C, Def)\color{black}\ qui prend en argument un concept non-atomique C et la définition de concept Def et qui est vraie ssi C n'est pas présent récursivement dans Def. Le cas de base est le suivant :
 \begin{minted}{prolog}
-pautoref(C, Def) :-cnamea(Def).
+pautoref(C, Def) :- cnamea(Def).
 \end{minted}
 
 Nous pouvons ainsi construire le prédicat \color{blue}verif\_Autoref(L)\color{black}\ qui prend en argument la liste des concept non-atomiques et qui vérifie s'il n'y a pas auto-référencement dans leur définition : 
@@ -137,12 +137,18 @@ verif_Autoref([C|L]) :-
 	pautoref(C, Def_C),
 	verif_Autoref(L).
 \end{minted}
-L'utilisation d'equiv nous permet de récupérer directement la définition de C, sans avoir à passer une box en argument. En effet les box n'ont juste là pas été altérée, on peut donc récupérer toutes les informations nécessaires avec les prédicats  \color{blue}cnamea, cnamena, iname, rname, equiv, inst, instR\color{black}.
+L'utilisation d'equiv nous permet de récupérer directement la définition de C, sans avoir à passer une box en argument. En effet les box n'ont juste là pas été altérée, on peut donc récupérer toutes les informations nécessaires directement avec les prédicats  \color{blue}cnamea, cnamena, iname, rname, equiv, inst, instR\color{black}.
 \subsection{Mise sous forme}
 Une fois que nous sommes sûr qu'il n'y a pas d'auto-référencement on peut développer les concepts non-atomiques. Nous implémentons le prédicat \color{blue}developpe(C,D)\color{black}\ qui est vraie ssi D est le développement de C. Le cas de base est le suivant : 
 \begin{minted}{prolog}
 developpe(C, C) :- cnamea(C).
 \end{minted}
+voici un exemple avec le ou logique :
+\begin{minted}{prolog}
+developpe(or(C1,C2), or(D1,D2)) :- 
+	developpe(C1, D1), 
+	developpe(C2, D2).
+ \end{minted}
 On peut ensuite écrire le prédicat \color{blue}transforme(L1,L2)\color{black}\ qui prend en argument deux box L1 et L2 et qui est vraie si et seulement si L2 est la box équivalent à L1 mais dans laquelle les concepts non-atomiques sont développés puis mis sous formes normales négatives :
 \begin{minted}{prolog}
 transforme([], []).
@@ -204,13 +210,13 @@ input_prop_type2(C1, C2) :-
         % input_prop_type2(C1, C2) % boucler ne semble pas fonctionner
     )), nl.
 \end{minted}
-Cette fois-ci il faut générer un nom de concept aléatoire $ Random\_CName $ afin de pouvoir ajouter dans la ABox $ Random\_CName : C1 \sqcap C2 $, c'est ce qui est fait par le biais de \color{blue} genere / 1 \color{black} et \color{blue} transforme / 2 \color{black}. Puis le tout est \color{blue} concat / 3 \color{black} dans la ABox.
+Cette fois-ci il faut générer un nom de concept aléatoire $ Random\_CName $ afin de pouvoir ajouter dans la ABox $ Random\_CName : C1 \sqcap C2 $, c'est ce qui est fait par le biais de \color{blue} genere / 1 \color{black} et \color{blue} transforme / 2 \color{black}. Puis le tout est \color{blue} concat / 3 \color{black} dans la ABox, la liste unaire est mise en premier argument car dans le cas contraire il y aurait un parcourt intégrale de $Abi$ d'après l'implémentation de \color{blue}concat\color{black}.
 \begin{minted}{prolog}
 acquisition_prop_type2(Abi, Abi1, Tbox) :- 
     input_prop_type2(C1, C2), % User input
     genere(Random_CName),
-    transforme([(Random_CName, and(C1, C2))], [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))]), % Développement + nnf
-    concat(Abi, [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
+    transforme([(Random_CName, and(C1, C2))], [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))]), 
+    concat([(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi, Abi1), 
     write("Abi1"), write(Abi1).
 \end{minted}
 
@@ -223,15 +229,19 @@ Pour faciliter l'implémentation, on commence par extraire chaque type d'asserti
 \begin{minted}{prolog}
 tri_Abox([], [], [], [], [], []).
 tri_Abox([(I, some(R,C)) | L], [(I, some(R,C)) | Lie], Lpt, Li, Lu, Ls) :-
-    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls).
 tri_Abox([(I, all(R,C)) | L], Lie, [(I, all(R,C)) | Lpt], Li, Lu, Ls) :-
-    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls).
 tri_Abox([(I, and(C1,C2)) | L], Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls) :-
-    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls).
 tri_Abox([(I, or(C1,C2)) | L], Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls) :-
-    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
-tri_Abox([A|L], Lie, Lpt, Li, Lu, [A|Ls]) :-
-    tri_Abox(L, Lie, Lpt, Li, Lu, Ls), !.
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls).
+tri_Abox([(I,C)|L], Lie, Lpt, Li, Lu, [(I,C)|Ls]) :-
+    cnamea(C),
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls).
+tri_Abox([(I,not(C))|L], Lie, Lpt, Li, Lu, [(I,not(C))|Ls]) :-
+    cnamea(C),
+    tri_Abox(L, Lie, Lpt, Li, Lu, Ls).
 \end{minted}
 
 Le deuxième prédicat important pour l'implémentation est \color{blue} evolue / 11 \color{black} qui prends en première paramètre une nouvelle proposition et l'ajoute dans la liste correspondante en vérifiant qu'il n'y est pas déjà. Voici l'exemple avec Lie :
@@ -239,9 +249,10 @@ Le deuxième prédicat important pour l'implémentation est \color{blue} evolue 
 \begin{minted}{prolog}
 evolue((I, some(R,C)), Lie, Lpt, Li, Lu, Ls, Lie, Lpt, Li, Lu, Ls) :-
     member((I, some(R,C)), Lie).
-evolue((I, some(R,C)), Lie, Lpt, Li, Lu, Ls, [(I, some(R,C)) | Lie], Lpt, Li, Lu, Ls).
+evolue((I, some(R,C)), Lie, Lpt, Li, Lu, Ls, [(I, some(R,C)) | Lie], Lpt, Li, Lu, Ls):-
+    \+ member((I, some(R,C)), Lie).
 \end{minted}
-Si l'élément à ajouter est déjà présent dans la liste, l'appel de \color{blue}evolue\color{black}\ va s'unifier pour les deux clauses de Horn ci dessus, c'est pour cela que lors d'un appel d'\color{blue}evolue\color{black}\  il faut mettre le prédicat d'arrêt \color{blue}!\color{black}\ après pour que seul la première clause soit utilisée. On pourrait aussi mettre comme condition de la deuxième clause \color{blue}\textbackslash+ member((I, some(R,C)), Lie)\color{black}\ mais le programme perdrait en efficacité car il y aurait potentiellement deux parcours de liste. Nous avons aussi besoin d'une fonction \color{blue}evolue\_rec\color{black}\ qui est similaire mais qui prend une liste d'instanciation en premier argument et applique \color{blue}evolue\color{black}\ à tous ses éléments.\\
+Nous avons aussi besoin d'une fonction \color{blue}evolue\_rec\color{black}\ qui est similaire mais qui prend une liste d'instanciation en premier argument et applique \color{blue}evolue\color{black}\ à tous ses éléments.\\
 
 
 Enfin, le dernier prédicat qui nous sera utile pour la suite est \color{blue} non\_clash / 1 \color{black}\ qui vérifie l'absence de clash dans la liste d'assertion reçu.
@@ -280,6 +291,75 @@ resolution([], [], [], Lu, Ls, Abr):-
 	non_clash(Ls),
 	transformation_and([], [], [], Lu, Ls, Abr).
 \end{minted}
-\end{document}
-Footer
-© 2022 GitHub, Inc. 
+
+\`A chaque fois nous vérifions la présence de clash avant l'appel du traitement.
+
+\subsubsection{Intersection}
+On souhaite traiter une instanciation $I:C_1\sqcap C_2$.
+\begin{minted}{prolog}
+transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :- 
+	write('Utilisation de la règle \u2A05 sur : '),affiche_Abi([(I, and(C1,C2))]),nl,
+	evolue_rec([(I,C1),(I,C2)], Lie, Lpt, Li, Lu, Ls,
+            Lie1, Lpt1, Li1, Lu1, Ls1),
+	affiche_evolution_Abox(Ls, Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Abr, Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
+	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
+\end{minted}
+
+L'appel de \color{blue}evolur\_rec\color{black}\ permet de rajouter $I:C_1$ et $I:C_2$ à $Lie$ sans faire de doublon ensuite nous traitons la résolution de la ABox modifée.
+\subsubsection{Union}
+On souhaite traiter une instanciation $I:C_1\sqcup C_2$.
+\begin{minted}{prolog}
+transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :- 
+	write('Utilisation de la règle \u2A06 sur : '),affiche_Abi([(I, or(C1,C2))]),nl,
+ 
+	write('Br1 : avec '),affiche_concept(C1),nl,
+	evolue((I, C1), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
+	affiche_evolution_Abox(Ls, Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Abr,
+            Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
+	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
+	
+transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :- 
+	write('Utilisation de la règle \u2A06 sur : '),affiche_Abi([(I, or(C1,C2))]),nl,
+ 
+	write('Br2 : avec '),affiche_concept(C2),nl,
+	evolue((I, C2),Lie, Lpt, Li, Lu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2),
+	affiche_evolution_Abox(Ls, Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Abr,
+            Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
+	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
+\end{minted}
+
+La structure est similaire à l'intersection mais il nous faut maintenant deux implémentations du même prédicat car il y a deux façons de trouver une branche ouerte, elle peut être dans la branche $Br_1$ ou dans la branche $Br_2$. Lors d'un appel de \color{blue}transformation\_or\color{black}, les arguments vont s'unifier à la première clause de Horn et va chercher une feuille ouverte dans le premier arbre, s'il n'en trouve pas l'appel va s'unifier à la deuxième clause et chercher dans le deuxième arbre. \\
+
+C'est le seul cas où les appels de \color{blue}resolution\color{black}\ ne sont pas linéaires car il y a ici une recherche en profondeur.
+\subsubsection{Il existe}
+On souhaite traiter une instanciation $I_1:\exists R.C$.
+\begin{minted}{prolog}
+complete_some([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr) :-
+	write('Utilisation de la règle \u2203 sur : '),affiche_Abi([(I1, some(R,C))]),nl,
+	genere(I2),
+	evolue((I2, C), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
+	affiche_evolution_Abox(Ls, [(I1,some(R,C)) | Lie], Lpt, Li, Lu, Abr,
+            Ls1, Lie1, Lpt1, Li1, Lu1, [(I1, I2, R) | Abr]),
+	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, [(I1, I2, R) | Abr]).
+\end{minted}
+
+L'appel de \color{blue}genere\color{black}\ permet de génerer un nouvelle instance $I_2$, on va ensuite introduire l'instanciation $I_2:C$ dans la Abox grâce à \color{blue}evolue\color{black}. Il suffit maintenant faire la résoulution de cette nouvelle Abox.
+
+\subsubsection{Pour tout}
+
+On souhaite traiter une instanciation $I_1:\forall R.C$.
+\begin{minted}{prolog}
+deduction_all(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr) :-
+	write('Utilisation de la règle \u2200 sur : '),affiche_Abi([(I1, all(R,C))]),nl,
+ 
+	findall((I2, C),  member((I1, I2, R), Abr),  LC2), 
+	evolue_rec(LC2, Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
+	affiche_evolution_Abox(Ls, Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Abr,
+            Ls1, Lie1, Lpt1, Li1, Lu1, Abr), 
+	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
+\end{minted}
+
+On souhaite dans un premier temps trouver l'intégralité des $I_2$ tel que $<I_1,I_2>:R$, pour cela nous allons utiliser le prédicat \color{blue}findall\color{black}\ fournit par prolog. Nous parcourons dans l'ABox de relation les $I_2$ tel que $<I_1,I_2>:R\in Abr$ avec l'aide de \color{blue}member\color{black}. Avec cela nous créons une liste $LI_2$ directement sous la forme de $(I_2,C)$. Ensuite il suffit d'ajouter les éléments de $LI_2$ dans l'Abox avec \color{blue}evolue\_rec\color{black}\ et résoudre la nouvelle ABox.\\
+
+Nous n'utilisons pas \color{blue}setof\color{black}\ car ce prédicat échoue si aucun élément n'est trouvé, or nous voulons que le programme continue même si aucun $I_2$ ne convient, $LI_2$ sera juste vide et rien ne sera ajouté à la ABox.
+\end{document} 
