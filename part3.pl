@@ -156,8 +156,8 @@ affiche_evolution_Abox(Ls1, Lie1, Lpt1, Li1, Lu1, Abr1, Ls2, Lie2, Lpt2, Li2, Lu
 	affiche_Abi(Lu2),
 	affiche_Abr(Abr2),
 	nl,
-	(non_clash(Ls2)->write('Pas de clash');
-		write('Clash')),nl,
+	(non_clash(Ls2)->write('Pas de clash dans ce noeud');
+		write('Clash dans ce noeud')),nl,
 	nl, write('============================='), nl, nl.
 
 /* 
