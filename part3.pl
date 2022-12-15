@@ -198,7 +198,7 @@ transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :-
   └──────────────────────────────────────────────────────────────────────────┘
  */
 transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :- 
-	write('Utilisation de la règle \u2A05 sur : '),affiche_Abi([(I, and(C1,C2))]),nl,
+	write('Utilisation de la règle \u2A05 sur : '), affiche_Abi([(I, and(C1,C2))]),nl,
 	% Suppression & extraction de la règle devenus inutile par la décomposition en paramètre
 
 	% Nouveau noeud
@@ -209,15 +209,14 @@ transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :-
 
 	% Appel récursif
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
-	
-	
+
 /* 
   ┌──────────────────────────────────────────────────────────────────────────┐
   │ % Il existe : ∃                                                          │
   └──────────────────────────────────────────────────────────────────────────┘
  */
 complete_some([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr) :-
-	write('Utilisation de la règle \u2203 sur : '),affiche_Abi([(I1, some(R,C))]),nl,
+	write('Utilisation de la règle \u2203 sur : '), affiche_Abi([(I1, some(R,C))]),nl,
 	% Nouveau noeud
 	genere(I2),
 	evolue((I2, C), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1), 
@@ -234,7 +233,7 @@ complete_some([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr) :-
   └──────────────────────────────────────────────────────────────────────────┘
  */
 deduction_all(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr) :-
-	(bagof((I2, C),  member((I1, I2, R), Abr), LC2) -> 
+	(setof((I2, C),  member((I1, I2, R), Abr), LC2) -> 
 		write('Utilisation de la règle \u2200 sur : '), affiche_Abi([(I1, all(R,C))]),
 		%writef('et < %w : %w > : %w', [I1, I2, R]), 
 		nl ;
