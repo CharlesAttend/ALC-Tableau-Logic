@@ -109,7 +109,7 @@ instance(I) :- iname(I).
 role(R) :- rname(R). 
 \end{minted}
 
-Le prédicat \color{blue}concept\color{black}\ nécesi et seulement site de la récursivité à cause des concepts non atomiques. Nous vérifions la grammaire avec les prédicats suivants :
+Le prédicat \color{blue}concept\color{black}\ nécessite de la récursivité à cause des concepts non atomiques. Nous vérifions la grammaire avec les prédicats suivants :
 
 \begin{minted}{prolog}
 concept(not(C)) :- concept(C).

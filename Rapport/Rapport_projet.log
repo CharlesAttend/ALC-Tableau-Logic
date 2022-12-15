@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.10.2)  15 DEC 2022 22:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.10.2)  15 DEC 2022 22:28
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -793,7 +793,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  41i,7n,43p,888b,704s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/charles/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/tcit1000.600pk> </home/charles/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ecit1000.600pk> </home/charles/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/tctt1000.600pk> </home/charles/.texlive2019/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk>{/usr/share/texlive/texmf-dist/fonts/enc/dvips/opensans/a_jg4h6q.enc}</usr/share/texlive/texmf-dist/fonts/type1/ascender/opensans/OpenSans-Bold.pfb></usr/share/texlive/texmf-dist/fonts/type1/ascender/opensans/OpenSans-Regular.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on /home/charles/Projet_LRC_Prolog/Rapport/Rapport_projet.pdf (11 pages, 152297 bytes).
+Output written on /home/charles/Projet_LRC_Prolog/Rapport/Rapport_projet.pdf (11 pages, 152285 bytes).
 PDF statistics:
  331 PDF objects out of 1000 (max. 8388607)
  201 compressed objects within 3 object streams
