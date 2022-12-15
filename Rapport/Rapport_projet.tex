@@ -17,6 +17,7 @@
 \usepackage{url}
 \usepackage{minted}
 \usepackage{xcolor}
+
 % \usepackage{lineno}
 % \linenumbers
 
@@ -32,6 +33,7 @@
 \urlstyle{same} %\href{url}{Text}
 
 \renewcommand{\baselinestretch}{1.5}
+
 
 \begin{document}
 
@@ -71,7 +73,7 @@
 \subsection{Les fichiers}
 Pour une meilleure compréhension du code, nous avons séparé celui-ci en plusieurs fichiers. Chacun à sa spécialisation : \begin{itemize}
     \item \verb|T-A_box.pl| : C'est ici que l'utilisateur entre la TBox et la ABox initiale.
-    \item \verb|run.pl| : Contient le prédicat \verb|programme/0|  qui appel les grandes étapes nécessaires à la résolution.
+    \item \verb|programme.pl| : Contient le prédicat \verb|programme/0|  qui appel les grandes étapes nécessaires à la résolution.
     \item \verb|part1.pl| : Contient les fonctions liées à la première partie décrite par le sujet.
     \item \verb|part2.pl| : Contient les fonctions liées à la deuxième partie décrite par le sujet.
     \item \verb|part3.pl| : Contient les fonctions liées à la troisième partie décrite par le sujet.
@@ -93,10 +95,6 @@ Le programme s'arrêtera et l'utilisateur sera averti en cas d'une erreur de gra
 
 \subsubsection{Lancement et saisie de la proposition à prouver}
 Pour lancer le programme entrez cette commande à la racine du projet : \verb|swipl -f run.pl|. Puis dans l'interpréteur prolog utilisez le prédicat \color{blue} programme/0 \color{black} pour lancer le programme.
-
-
-\subsection{Exemple d'utilisation}
-
 
 \section{\'Etape préliminaire de vérification et de mise en forme de la Tbox et de la Abox}
 \subsection{Correction syntaxique et sémantique}
@@ -132,6 +130,7 @@ verif_Tbox([(CA, CG) | Q]) :-
 verif_Tbox([]).
 \end{minted}
 On fait de même avec la Abox en vérifiant l'instanciation des concepts avec \color{blue}instanciationC(I, CG)\color{black}\ et l'instanciation des relations avec \color{blue}instanciationR(I1, I2, R)\color{black}.
+
 \subsection{Vérification de l'auto-référencement}
 Nous voulons ensuite s'assurer qu'il n'y a pas d'auto-référencement dans la définition des concepts non atomiques. S'il y en a, au moment de développer les concepts pour n'avoir que des concepts atomiques il y aura une boucle infinie. Nous implémentons le prédicat \color{blue}pautoref(C, Def)\color{black}\ qui prend en argument un concept non atomique C et la définition de concept Def et qui est vraie si et seulement si C n'est pas présent récursivement dans Def. Le cas de base est le suivant :
 \begin{minted}{prolog}
@@ -158,7 +157,7 @@ Voici un exemple avec le "ou" logique :
 developpe(or(C1,C2), or(D1,D2)) :- 
 	developpe(C1, D1), 
 	developpe(C2, D2).
- \end{minted}
+\end{minted}
 On peut ensuite écrire le prédicat \color{blue}transforme(L1,L2)\color{black}\ qui prend en argument deux box L1 et L2 et qui est vraie si et seulement si L2 est la box équivalente à L1 mais dans laquelle les concepts non atomiques sont développés puis mis sous formes normales négatives :
 \begin{minted}{prolog}
 transforme([], []).
@@ -183,23 +182,22 @@ input_prop_type1(I, CG) :-
     write('Ajoutons une instance de concept à la ABox :'), nl,
     write('Elle a la forme "I : C"'), nl,
     write('Entrez I :'),nl, 
-    read(I),nl,
+    read(I), writef('I : %w', [I]), nl, nl,
     write('Entrez C :'),nl, 
-    read(CG),
+    read(CG), writef('C : %w', [C]), nl, nl,
     (instanciationC(I, CG) -> % if 
-        write("Input correct")
+        writef('%w : %w', [I, CG])
         ; ( % else
-        write('Erreur : I n\'est pas une instance déclarée ou C n\'est pas un concept'), nl,
-        write('Veuillez recommencer'), nl
-        % input_prop_type1(I, CG) % boucler ne semble pas fonctionner 
-        )), nl.
+        write('\033[1;31m[ERREUR] : I n\'est pas une instance déclarée ou C n\'est pas un concept\033[0m'), nl,
+        write('Veuillez recommencer'), nl, fail
+    )).
 \end{minted}
 Dans la suite d'\color{blue} acquisition\_prop\_type1 \color{black}\ on effectue quelques traitements sur $ \neg C $ en remplaçant de manière récursive les identificateurs de concepts complexes par leur définition et en mettant le tout sous forme normale négative (prédicat \color{blue} transforme \color{black}). On peut ensuite ajouter le tout dans la ABox avec \color{blue} concat \color{black}.
 \begin{minted}{prolog}
 acquisition_prop_type1(Abi,Abi1,Tbox) :- 
-    input_prop_type1(I, CG), % User input
-    transforme([(I,not(CG))], [(I, CG_dev_nnf)]), % Développement + nnf
-    concat(Abi,[(I, CG_dev_nnf)], Abi1), % Ajout de l'input de l'utilisateur dans la ABox
+    input_prop_type1(I, CG),                        % User input
+    transforme([(I,not(CG))], [(I, CG_dev_nnf)]),   % Développement + nnf
+    concat(Abi,[(I, CG_dev_nnf)], Abi1),            % Ajout de l'input de l'utilisateur dans la ABox
     write("Abi1"), write(Abi1). 
 \end{minted}
 
@@ -207,18 +205,17 @@ acquisition_prop_type1(Abi,Abi1,Tbox) :-
 Comme précédemment, on commence par demander à l'utilisateur d'entrer $ C1 $ et $ C2 $ par le biais du prédicat \color{blue} input\_prop\_type2 / 2 \color{black}. Et on vérifie si l'entrée de l'utilisateur est correcte syntaxiquement avec le prédicat \color{blue}concept / 2\color{black}.
 \begin{minted}{prolog}
 input_prop_type2(C1, C2) :-
-    write('Ajoutons une proposition de type 2.'), nl,
-    write('Entrez C1 :'),nl, 
-    read(C1),nl,
-    write('Entrez C2 :'),nl, 
-    read(C2),
+    write('Ajoutons une proposition de la forme C1 ⊓ C2 ⊑ ⊥.'), nl,
+    write('Entrez C1 :'), nl, 
+    read(C1), nl, writef('C1 : %w', [C1]), nl, nl,
+    write('Entrez C2 :'), nl, 
+    read(C2),nl, writef('C2 : %w', [C2]), nl, nl,
     (concept(and(C1, C2)) -> % if 
-        write("Input correct")
+        writef("%w ⊓ %w ⊑ ⊥", [C1, C2])
         ; ( % else
-        write('Erreur : C1 ou C2 n\'est pas un concept déclaré'), nl,
-        write('Veuillez recommencer'), nl
-        % input_prop_type2(C1, C2) % boucler ne semble pas fonctionner
-    )), nl.
+        write('\033[1;31m[ERREUR] : C1 ou C2 n\'est pas un concept déclaré\033[0m'), nl,
+        write('Veuillez recommencer'), nl, fail
+    )).
 \end{minted}
 Cette fois-ci il faut générer un nom de concept aléatoire $ Random\_CName $ afin de pouvoir ajouter dans la ABox $ Random\_CName : C1 \sqcap C2 $, c'est ce qui est fait par le biais de \color{blue} genere / 1 \color{black} et \color{blue} transforme / 2 \color{black}. Puis le tout est \color{blue} concat / 3 \color{black} dans la ABox, la liste unaire est mise en premier argument car dans le cas contraire il y aurait un parcours intégral de $Abi$ d'après l'implémentation de \color{blue}concat\color{black}.
 \begin{minted}{prolog}
@@ -227,7 +224,6 @@ acquisition_prop_type2(Abi, Abi1, Tbox) :-
     genere(Random_CName),
     transforme([(Random_CName, and(C1, C2))], [(Random_CName, and(C1_dev_nnf, C2_dev_nnf))]), 
     concat([(Random_CName, and(C1_dev_nnf, C2_dev_nnf))], Abi, Abi1), 
-    write("Abi1"), write(Abi1).
 \end{minted}
 
 \section{Démonstration de la proposition}
@@ -276,7 +272,7 @@ non_clash([(I,C) | Ls]) :-
 L'appel de \color{blue}nnf\color{black}\ permet de transformer un $\neg\neg$C en C et ne change pas un $\neg$C.
 Nous avons aussi implémenté diverses fonctions d'affichage qui peut représenter des Abox avec une écriture infixe des concepts.
 \subsection{Algorithme de résolution}
-Nous avons implémenté le prédicat resolution/6 qui prend en argument un ABox triée et qui applique la méthode des tableaux, elle renvoie vraie si et seulement si une feuille ouverte est trouvée. Le cas de base est donc le suivant :
+Nous avons implémenté le prédicat \color{blue} resolution/6 \color{black}  qui prend en argument un ABox triée et qui applique la méthode des tableaux, elle renvoie vraie si et seulement si une feuille ouverte est trouvée. Le cas de base est donc le suivant :
 \begin{minted}{prolog}
 resolution([], [], [], [], Ls, _):-
 	non_clash(Ls).
@@ -314,26 +310,22 @@ transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :-
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
 \end{minted}
 
-L'appel de \color{blue}evolur\_rec\color{black}\ permet de rajouter $I:C_1$ et $I:C_2$ à $Lie$ sans faire de doublon ensuite nous traitons la résolution de la ABox modifée.
+L'appel de \color{blue}evolue\_rec\color{black}\ permet de rajouter $I:C_1$ et $I:C_2$ à $Lie$ sans faire de doublon ensuite nous traitons la résolution de la ABox modifiée.
 \subsubsection{Union}
 On souhaite traiter une instanciation $I:C_1\sqcup C_2$.
 \begin{minted}{prolog}
 transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :- 
 	write('Utilisation de la règle \u2A06 sur : '),affiche_Abi([(I, or(C1,C2))]),nl,
- 
 	write('Br1 : avec '),affiche_concept(C1),nl,
 	evolue((I, C1), Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
-	affiche_evolution_Abox(Ls, Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Abr,
-            Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
+	affiche_evolution_Abox(Ls, Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Abr, Ls1, Lie1, Lpt1, Li1, Lu1, Abr),
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
 	
 transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :- 
 	write('Utilisation de la règle \u2A06 sur : '),affiche_Abi([(I, or(C1,C2))]),nl,
- 
 	write('Br2 : avec '),affiche_concept(C2),nl,
 	evolue((I, C2),Lie, Lpt, Li, Lu, Ls, Lie2, Lpt2, Li2, Lu2, Ls2),
-	affiche_evolution_Abox(Ls, Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Abr,
-            Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
+	affiche_evolution_Abox(Ls, Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Abr, Ls2, Lie2, Lpt2, Li2, Lu2, Abr),
 	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
 \end{minted}
 
@@ -359,16 +351,16 @@ L'appel de \color{blue}genere\color{black}\ permet de générer une nouvelle ins
 On souhaite traiter une instanciation $I_1:\forall R.C$.
 \begin{minted}{prolog}
 deduction_all(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr) :-
-	write('Utilisation de la règle \u2200 sur : '),affiche_Abi([(I1, all(R,C))]),nl,
- 
-	findall((I2, C),  member((I1, I2, R), Abr),  LC2), 
+	(setof((I2, C),  member((I1, I2, R), Abr), LC2) -> 
+		write('Utilisation de la règle \u2200 sur : '), affiche_Abi([(I1, all(R,C))]), nl ;
+		write('Tentative d\'utilisation de la règle \u2200 sur : '), affiche_Abi([(I1, all(R,C))]), writef('car il n\'y a pas de b tel que < %w : b > : %w', [I1, R]),nl
+	),
 	evolue_rec(LC2, Lie, Lpt, Li, Lu, Ls, Lie1, Lpt1, Li1, Lu1, Ls1),
-	affiche_evolution_Abox(Ls, Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Abr,
-            Ls1, Lie1, Lpt1, Li1, Lu1, Abr), 
+	affiche_evolution_Abox(Ls, Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Abr, Ls1, Lie1, Lpt1, Li1, Lu1, Abr), 
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
 \end{minted}
 
-On souhaite dans un premier temps trouver l'intégralité des $I_2$ tel que $<I_1,I_2>:R$, pour cela nous allons utiliser le prédicat \color{blue}findall\color{black}\ fournit par prolog. Nous parcourons dans l'ABox de relation les $I_2$ tel que $<I_1,I_2>:R\in Abr$ avec l'aide de \color{blue}member\color{black}. Avec cela nous créons une liste $LI_2$ directement sous la forme de $(I_2,C)$. Ensuite il suffit d'ajouter les éléments de $LI_2$ dans l'Abox avec \color{blue}evolue\_rec\color{black}\ et résoudre la nouvelle ABox.\\
+On souhaite dans un premier temps trouver l'intégralité des $I_2$ tel que $<I_1,I_2>:R$, pour cela nous allons utiliser le prédicat \color{blue}setof/3\color{black}\ fournit par prolog. Losque cela échoue, c'est à dire si aucun élément n'est trouvé, on l'indique à l'utilisateur.\\
+Ensuite, nous parcourons dans l'ABox de relation les $I_2$ tel que $<I_1,I_2>:R\in Abr$ avec l'aide de \color{blue}member\color{black}. Avec cela nous créons une liste $LI_2$ directement sous la forme de $(I_2,C)$. Ensuite il suffit d'ajouter les éléments de $LI_2$ dans l'Abox avec \color{blue}evolue\_rec\color{black}\ et résoudre la nouvelle ABox.\\
 
-Nous n'utilisons pas \color{blue}setof\color{black}\ car ce prédicat échoue si aucun élément n'est trouvé, or nous voulons que le programme continue même si aucun $I_2$ ne convient, $LI_2$ sera juste vide et rien ne sera ajouté à la ABox.
 \end{document} 
