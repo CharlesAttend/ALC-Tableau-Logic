@@ -109,7 +109,7 @@ developpe(some(R,C), some(R,D)) :- developpe(C, D).
 
 developpe(all(R,C), all(R,D)) :- developpe(C, D).
 
-% remplacement des boxs
+% remplacement des boxs : équivalent de traitement_Tbox et traitement_Abox
 transforme([], []).
 transforme([(X,C) | L], [(X,D) | M]) :- 
 	developpe(C, E),
