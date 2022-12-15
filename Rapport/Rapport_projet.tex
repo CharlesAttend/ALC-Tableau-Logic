@@ -94,11 +94,11 @@ Les informations de la TBox et de la ABox sont à saisir dans le fichier \verb|T
 Le programme s'arrêtera et l'utilisateur sera averti en cas d'une erreur de grammaire ou de syntaxe mais également si la Tbox est cyclique.
 
 \subsubsection{Lancement et saisie de la proposition à prouver}
-Pour lancer le programme entrez cette commande à la racine du projet : \verb|swipl -f run.pl|. Puis dans l'interpréteur prolog utilisez le prédicat \color{blue} programme/0 \color{black} pour lancer le programme.
+Pour lancer le programme entrez cette commande à la racine du projet : \verb|swipl -f run.pl|. Puis dans l'interpréteur prolog utilisez le prédicat \color{blue} programme / 0 \color{black} pour lancer le programme.
 
 \section{\'Etape préliminaire de vérification et de mise en forme de la Tbox et de la Abox}
 \subsection{Correction syntaxique et sémantique}
-Dans cette première partie nous commençons par vérifier la correction sémantique et syntaxique des deux box. Pour ce faire nous implémentons les prédicats d'arité 1 \color{blue}concept, instance, role\color{black}\ qui vérifie si des objets sont de ce type. Les cas de base sont les suivants :
+Dans cette première partie nous commençons par vérifier la correction sémantique et syntaxique des deux box. Pour ce faire nous implémentons les prédicats \color{blue}concept / 1, instance / 1, role / 1\color{black}\ qui vérifie si des objets sont de ce type. Les cas de base sont les suivants :
 
 \begin{minted}{prolog}
 concept(C) :- cnamea(C).
@@ -107,7 +107,7 @@ instance(I) :- iname(I).
 role(R) :- rname(R). 
 \end{minted}
 
-Le prédicat \color{blue}concept\color{black}\ nécessite de la récursivité à cause des concepts non atomiques. Nous vérifions la grammaire avec les prédicats suivants :
+Le prédicat \color{blue}concept / 1\color{black}\ nécessite de la récursivité à cause des concepts non atomiques. Nous vérifions la grammaire avec les prédicats suivants :
 
 \begin{minted}{prolog}
 concept(not(C)) :- concept(C).
@@ -117,12 +117,12 @@ concept(some(R, C)) :- role(R), concept(C).
 concept(all(R, C)) :- role(R), concept(C).
 \end{minted}
 
-Nous utilisons ces prédicats pour définir le prédicat \color{blue}definition\color{black}\ d'arité 2 qui vérifie si la définition d'une équivalence est juste : il faut que le premier élément soit un concept non atomique et que le deuxième soit bien la définition d'un concept :
+Nous utilisons ces prédicats pour définir le prédicat \color{blue}definition / 2\color{black}\ qui vérifie si la définition d'une équivalence est juste : il faut que le premier élément soit un concept non atomique et que le deuxième soit bien la définition d'un concept :
 \begin{minted}{prolog}
 definition(CA, CG) :- cnamena(CA), concept(CG).
 \end{minted}
 
-Grâce à ce prédicat nous pouvons vérifier la Tbox avec \color{blue}verif\_Tbox\color{black}\ qui prend en argument une TBox sous forme d'une liste de d'équivalence et qui vérifie la correction syntaxique et sémantique : 
+Grâce à ce prédicat nous pouvons vérifier la Tbox avec \color{blue}verif\_Tbox / 1\color{black}\ qui prend en argument une TBox sous forme d'une liste de d'équivalence et qui vérifie la correction syntaxique et sémantique : 
 \begin{minted}{prolog}
 verif_Tbox([(CA, CG) | Q]) :- 
     definition(CA, CG), 
@@ -145,7 +145,7 @@ verif_Autoref([C|L]) :-
 	pautoref(C, Def_C),
 	verif_Autoref(L).
 \end{minted}
-L'utilisation d'equiv nous permet de récupérer directement la définition de C, sans avoir à passer une box en argument. En effet les boxs n'ont juste là pas été altérées, on peut donc récupérer toutes les informations nécessaires directement avec les prédicats  \color{blue}cnamea, cnamena, iname, rname, equiv, inst, instR\color{black}.
+L'utilisation d'equiv nous permet de récupérer directement la définition de C, sans avoir à passer une box en argument. En effet les boxs n'ont juste là pas été altérées, on peut donc récupérer toutes les informations nécessaires directement avec les prédicats  \color{blue}cnamea / 1, cnamena / 1, iname / 1, rname / 1, equiv / 1, inst / 2, instR / 3\color{black}.
 
 \subsection{Mise sous forme}
 Une fois que nous sommes sûrs qu'il n'y a pas d'auto-référencement on peut développer les concepts non atomiques. Nous implémentons le prédicat \color{blue}developpe(C,D)\color{black}\ qui est vraie si et seulement si D est le développement de C. Le cas de base est le suivant : 
@@ -166,7 +166,7 @@ transforme([(X,C) | L], [(X,D) | M]) :-
 	nnf(E, D),
 	transforme(L, M).
 \end{minted}
-Ce prédicat \color{blue} transforme / 2 \color{black} combine \color{blue} traitement\_Tbox \color{black} et \color{blue} traitement\_Abox \color{black} mentionnés par le sujet.
+Ce prédicat \color{blue} transforme / 2 \color{black} combine \color{blue} traitement\_Tbox \color{black} et \color{blue} traitement\_Abox \color{black} mentionnés par le sujet. Il suffit d'appliquer ce prédicat à la TBox et à la ABox des concepts.
 
 \section{Saisie de la proposition à montrer}
 Dans la deuxième partie, l'utilisateur peut choisir d'entrer deux types de propositions à démontrer : 
@@ -176,7 +176,7 @@ Dans la deuxième partie, l'utilisateur peut choisir d'entrer deux types de prop
 \end{itemize}
 
 \subsection{Proposition de type 1 : $ I : C $ }
-On commence par demander à l'utilisateur d'entrer $ I $ et $ C $ par le biais du prédicat \color{blue}input\_prop\_type1\color{black}\. C'est également ici que l'on vérifie si l'entrée de l'utilisateur est correcte syntaxiquement avec le prédicat \color{blue}instanciationC / 2\color{black}.
+On commence par demander à l'utilisateur d'entrer $ I $ et $ C $ par le biais du prédicat \color{blue}input\_prop\_type1\color{black}.\ C'est également ici que l'on vérifie si l'entrée de l'utilisateur est correcte syntaxiquement avec le prédicat \color{blue}instanciationC / 2\color{black}.
 \begin{minted}{prolog}
 input_prop_type1(I, CG) :-
     write('Ajoutons une instance de concept à la ABox :'), nl,
@@ -192,7 +192,7 @@ input_prop_type1(I, CG) :-
         write('Veuillez recommencer'), nl, fail
     )).
 \end{minted}
-Dans la suite d'\color{blue} acquisition\_prop\_type1 \color{black}\ on effectue quelques traitements sur $ \neg C $ en remplaçant de manière récursive les identificateurs de concepts complexes par leur définition et en mettant le tout sous forme normale négative (prédicat \color{blue} transforme \color{black}). On peut ensuite ajouter le tout dans la ABox avec \color{blue} concat \color{black}.
+Dans la suite d'\color{blue} acquisition\_prop\_type1 / 3\color{black}\ on effectue quelques traitements sur $ \neg C $ en remplaçant de manière récursive les identificateurs de concepts complexes par leur définition et en mettant le tout sous forme normale négative (prédicat \color{blue} transforme \color{black}). On peut ensuite ajouter le tout dans la ABox avec \color{blue} concat \color{black}.
 \begin{minted}{prolog}
 acquisition_prop_type1(Abi,Abi1,Tbox) :- 
     input_prop_type1(I, CG),                        % User input
@@ -217,7 +217,7 @@ input_prop_type2(C1, C2) :-
         write('Veuillez recommencer'), nl, fail
     )).
 \end{minted}
-Cette fois-ci il faut générer un nom de concept aléatoire $ Random\_CName $ afin de pouvoir ajouter dans la ABox $ Random\_CName : C1 \sqcap C2 $, c'est ce qui est fait par le biais de \color{blue} genere / 1 \color{black} et \color{blue} transforme / 2 \color{black}. Puis le tout est \color{blue} concat / 3 \color{black} dans la ABox, la liste unaire est mise en premier argument car dans le cas contraire il y aurait un parcours intégral de $Abi$ d'après l'implémentation de \color{blue}concat\color{black}.
+Cette fois-ci il faut générer un nom de concept aléatoire $ Random\_CName $ afin de pouvoir ajouter dans la ABox $ Random\_CName : C1 \sqcap C2 $, c'est ce qui est fait par le biais de \color{blue} genere / 1 \color{black} et \color{blue} transforme / 2 \color{black}. Puis le tout est \color{blue} concat / 3 \color{black} dans la ABox, la liste unaire est mise en premier argument car dans le cas contraire il y aurait un parcours intégral de $Abi$ d'après l'implémentation de \color{blue}concat / 3\color{black}.
 \begin{minted}{prolog}
 acquisition_prop_type2(Abi, Abi1, Tbox) :- 
     input_prop_type2(C1, C2), % User input
@@ -272,7 +272,7 @@ non_clash([(I,C) | Ls]) :-
 L'appel de \color{blue}nnf\color{black}\ permet de transformer un $\neg\neg$C en C et ne change pas un $\neg$C.
 Nous avons aussi implémenté diverses fonctions d'affichage qui peut représenter des Abox avec une écriture infixe des concepts.
 \subsection{Algorithme de résolution}
-Nous avons implémenté le prédicat \color{blue} resolution/6 \color{black}  qui prend en argument un ABox triée et qui applique la méthode des tableaux, elle renvoie vraie si et seulement si une feuille ouverte est trouvée. Le cas de base est donc le suivant :
+Nous avons implémenté le prédicat \color{blue} resolution / 6 \color{black}  qui prend en argument un ABox triée et qui applique la méthode des tableaux, elle renvoie vraie si et seulement si une feuille ouverte est trouvée. Le cas de base est donc le suivant :
 \begin{minted}{prolog}
 resolution([], [], [], [], Ls, _):-
 	non_clash(Ls).
@@ -310,7 +310,7 @@ transformation_and(Lie, Lpt, [(I, and(C1,C2)) | Li], Lu, Ls, Abr) :-
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
 \end{minted}
 
-L'appel de \color{blue}evolue\_rec\color{black}\ permet de rajouter $I:C_1$ et $I:C_2$ à $Lie$ sans faire de doublon ensuite nous traitons la résolution de la ABox modifiée.
+L'appel de \color{blue}evolue\_rec / 11\color{black}\ permet de rajouter $I:C_1$ et $I:C_2$ à $Lie$ sans faire de doublon ensuite nous traitons la résolution de la ABox modifiée.
 \subsubsection{Union}
 On souhaite traiter une instanciation $I:C_1\sqcup C_2$.
 \begin{minted}{prolog}
@@ -329,9 +329,9 @@ transformation_or(Lie, Lpt, Li, [(I, or(C1,C2)) | Lu], Ls, Abr) :-
 	resolution(Lie2, Lpt2, Li2, Lu2, Ls2, Abr).
 \end{minted}
 
-La structure est similaire à l'intersection mais il nous faut maintenant deux implémentations du même prédicat car il y a deux façons de trouver une branche ouverte, elle peut être dans la branche $Br_1$ ou dans la branche $Br_2$. Lors d'un appel de \color{blue}transformation\_or\color{black}, les arguments vont s'unifier à la première clause de Horn et va chercher une feuille ouverte dans le premier arbre, s'il n'en trouve pas l'appel va s'unifier à la deuxième clause et chercher dans le deuxième arbre. \\
+La structure est similaire à l'intersection mais il nous faut maintenant deux implémentations du même prédicat car il y a deux façons de trouver une branche ouverte, elle peut être dans la branche $Br_1$ ou dans la branche $Br_2$. Lors d'un appel de \color{blue}transformation\_or / 6\color{black}, les arguments vont s'unifier à la première clause de Horn et va chercher une feuille ouverte dans le premier arbre, s'il n'en trouve pas l'appel va s'unifier à la deuxième clause et chercher dans le deuxième arbre. \\
 
-C'est le seul cas où les appels de \color{blue}resolution\color{black}\ ne sont pas linéaires car il y a ici une recherche en profondeur.
+C'est le seul cas où les appels de \color{blue}resolution / 6\color{black}\ ne sont pas linéaires car il y a ici une recherche en profondeur.
 \subsubsection{Il existe}
 On souhaite traiter une instanciation $I_1:\exists R.C$.
 \begin{minted}{prolog}
@@ -344,7 +344,7 @@ complete_some([(I1,some(R,C)) | Lie], Lpt, Li, Lu, Ls, Abr) :-
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, [(I1, I2, R) | Abr]).
 \end{minted}
 
-L'appel de \color{blue}genere\color{black}\ permet de générer une nouvelle instance $I_2$, on va ensuite introduire l'instanciation $I_2:C$ dans la Abox grâce à \color{blue}evolue\color{black}. Il suffit maintenant de faire la résolution de cette nouvelle Abox.
+L'appel de \color{blue}genere / 1\color{black}\ permet de générer une nouvelle instance $I_2$, on va ensuite introduire l'instanciation $I_2:C$ dans la Abox grâce à \color{blue}evolue / 11\color{black}. Il suffit maintenant de faire la résolution de cette nouvelle Abox.
 
 \subsubsection{Pour tout}
 
@@ -360,7 +360,7 @@ deduction_all(Lie, [(I1, all(R, C)) | Lpt], Li, Lu, Ls, Abr) :-
 	resolution(Lie1, Lpt1, Li1, Lu1, Ls1, Abr).
 \end{minted}
 
-On souhaite dans un premier temps trouver l'intégralité des $I_2$ tel que $<I_1,I_2>:R$, pour cela nous allons utiliser le prédicat \color{blue}setof/3\color{black}\ fournit par prolog. Losque cela échoue, c'est à dire si aucun élément n'est trouvé, on l'indique à l'utilisateur.\\
-Ensuite, nous parcourons dans l'ABox de relation les $I_2$ tel que $<I_1,I_2>:R\in Abr$ avec l'aide de \color{blue}member\color{black}. Avec cela nous créons une liste $LI_2$ directement sous la forme de $(I_2,C)$. Ensuite il suffit d'ajouter les éléments de $LI_2$ dans l'Abox avec \color{blue}evolue\_rec\color{black}\ et résoudre la nouvelle ABox.\\
+On souhaite dans un premier temps trouver l'intégralité des $I_2$ tel que $<I_1,I_2>:R$, pour cela nous allons utiliser le prédicat \color{blue}setof / 3\color{black}\ fournit par prolog. Lorsque cela échoue, c'est à dire si aucun élément n'est trouvé, on l'indique à l'utilisateur.\\
+Ensuite, nous parcourons dans l'ABox de relation les $I_2$ tel que $<I_1,I_2>:R\in Abr$ avec l'aide de \color{blue}member / 2\color{black}. Avec cela nous créons une liste $LI_2$ directement sous la forme de $(I_2,C)$. Ensuite il suffit d'ajouter les éléments de $LI_2$ dans l'Abox avec \color{blue}evolue\_rec / 11\color{black}\ et résoudre la nouvelle ABox.\\
 
-\end{document} 
+\end{document}
