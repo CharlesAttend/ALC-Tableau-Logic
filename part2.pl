@@ -53,7 +53,7 @@ input_prop_type2(C1, C2) :-
     (concept(and(C1, C2)) -> % if 
         writef("%w ⊓ %w ⊑ ⊥", [C1, C2])
         ; ( % else
-        write('\033[1;31m[ERREUR] : C1 ou C2 n\'est pas un concept déclarée\033[0m'), nl,
+        write('\033[1;31m[ERREUR] : C1 ou C2 n\'est pas un concept déclaré\033[0m'), nl,
         write('Veuillez recommencer'), nl, fail
     )).
 
